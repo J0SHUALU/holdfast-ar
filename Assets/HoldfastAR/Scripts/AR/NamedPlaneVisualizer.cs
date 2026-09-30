@@ -100,6 +100,9 @@ namespace HoldfastAR.AR
             _mesh.vertices = vertices;
             _mesh.uv = uvs;
             _mesh.triangles = triangles;
+            var colors = new Color32[n + 1];
+            for (int i = 0; i < colors.Length; i++) colors[i] = new Color32(255, 255, 255, 255);
+            _mesh.colors32 = colors;
             _mesh.RecalculateNormals();
             _mesh.RecalculateBounds();
 

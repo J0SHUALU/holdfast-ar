@@ -45,7 +45,7 @@ namespace HoldfastAR.Enemies
         {
             if (Context.EnemyProjectiles == null || Context.Target == null) return;
 
-            Vector3 origin = muzzle != null ? muzzle.position : transform.position + Vector3.up * 0.2f;
+            Vector3 origin = muzzle != null ? muzzle.position + muzzle.forward * 0.12f : transform.position + Vector3.up * 0.3f;
             Vector3 direction = Context.Target.position - origin;
             Context.EnemyProjectiles.Fire(origin, direction, projectileSpeed, attackDamage * DamageMultiplier, Team.Enemy);
             AudioManager.Instance?.PlayAt(SoundId.EnemyShoot, origin);
