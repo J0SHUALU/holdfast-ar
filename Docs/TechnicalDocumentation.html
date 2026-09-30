@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Holdfast AR - Technical Documentation</title>
+<style>
+  @page { size: A4; margin: 14mm 15mm; }
+  body { font-family: "Liberation Sans", Arial, sans-serif; font-size: 9.6pt; line-height: 1.38; color: #14212b; margin: 0; }
+  h1 { font-size: 19pt; margin: 0 0 2px; color: #0b5d73; }
+  .meta { color: #4a6270; margin-bottom: 8px; font-size: 9pt; }
+  h2 { font-size: 11.6pt; color: #0b5d73; border-bottom: 1.5px solid #28c8e6; padding-bottom: 2px; margin: 12px 0 5px; }
+  h3 { font-size: 10pt; margin: 8px 0 3px; }
+  p { margin: 3px 0 5px; }
+  ul { margin: 2px 0 5px 16px; padding: 0; }
+  li { margin: 1px 0; }
+  code { font-family: "Liberation Mono", monospace; font-size: 8.6pt; background: #eef6f8; padding: 0 3px; border-radius: 3px; }
+  table { border-collapse: collapse; width: 100%; margin: 4px 0 6px; font-size: 8.8pt; }
+  th, td { border: 1px solid #c9dde3; padding: 3px 5px; text-align: left; vertical-align: top; }
+  th { background: #e3f4f8; }
+  .diagram { text-align: center; margin: 4px 0; }
+  .two { display: flex; gap: 14px; }
+  .two > div { flex: 1; }
+  .avoid { break-inside: avoid; }
+  pre { font-family: "Liberation Mono", monospace; font-size: 8.2pt; background: #f3f8fa; border: 1px solid #d7e7ec; padding: 5px 7px; margin: 3px 0 6px; white-space: pre-wrap; }
+</style>
+</head>
+<body>
+
+<h1>Holdfast AR: Technical Documentation</h1>
+<div class="meta">Mobile AR survival shooter · Unity 6 + AR Foundation (ARCore, Android) · Developer: <b>Joshua Chukwuebuka Moses</b></div>
+
+<h2>1. Architecture overview</h2>
+<p>The game is split into small systems that talk through a <b>GameManager</b> (the coordinator) and a static
+<b>GameEvents</b> hub. Gameplay code never references UI classes: it raises events, and the HUD listens.
+The match flow is driven by a <b>state machine</b>: <code>MainMenu → Placement → Playing → GameOver</code>, and Restart jumps straight back to Playing.</p>
+
+<div class="diagram">
+<svg width="690" height="250" viewBox="0 0 690 250" xmlns="http://www.w3.org/2000/svg" font-family="Liberation Sans, Arial" font-size="10.5">
+  <defs><marker id="a" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#3b6b7a"/></marker></defs>
+  <style>.b{fill:#e8f7fb;stroke:#28a9c6;stroke-width:1.3;rx:6}.m{fill:#0b5d73}.t{fill:#fff;font-weight:bold}.l{stroke:#3b6b7a;stroke-width:1.2;fill:none;marker-end:url(#a)}.s{font-size:9px;fill:#40606c}</style>
+  <!-- GameManager -->
+  <rect x="255" y="8" width="180" height="44" rx="6" class="m"/>
+  <text x="345" y="27" text-anchor="middle" class="t">GameManager (Singleton)</text>
+  <text x="345" y="42" text-anchor="middle" fill="#bfeff9" font-size="9.5">owns GameStateMachine</text>
+  <!-- states -->
+  <rect x="20" y="78" width="150" height="80" rx="6" class="b"/>
+  <text x="95" y="94" text-anchor="middle" font-weight="bold">States (State pattern)</text>
+  <text x="95" y="110" text-anchor="middle" class="s">MainMenuState</text>
+  <text x="95" y="123" text-anchor="middle" class="s">PlacementState</text>
+  <text x="95" y="136" text-anchor="middle" class="s">PlayingState</text>
+  <text x="95" y="149" text-anchor="middle" class="s">GameOverState</text>
+  <!-- AR -->
+  <rect x="190" y="78" width="150" height="80" rx="6" class="b"/>
+  <text x="265" y="94" text-anchor="middle" font-weight="bold">AR layer</text>
+  <text x="265" y="110" text-anchor="middle" class="s">ARPlacementController</text>
+  <text x="265" y="123" text-anchor="middle" class="s">NamedPlaneVisualizer</text>
+  <text x="265" y="136" text-anchor="middle" class="s">PlaneSpawnArea</text>
+  <text x="265" y="149" text-anchor="middle" class="s">ARPlane / Raycast / Anchor mgrs</text>
+  <!-- Enemies -->
+  <rect x="360" y="78" width="150" height="80" rx="6" class="b"/>
+  <text x="435" y="94" text-anchor="middle" font-weight="bold">Enemies</text>
+  <text x="435" y="110" text-anchor="middle" class="s">EnemySpawner</text>
+  <text x="435" y="123" text-anchor="middle" class="s">EnemyFactory (Factory)</text>
+  <text x="435" y="136" text-anchor="middle" class="s">Enemy ▸ MeleeEnemy</text>
+  <text x="435" y="149" text-anchor="middle" class="s">Enemy ▸ ShooterEnemy</text>
+  <!-- Player -->
+  <rect x="530" y="78" width="145" height="80" rx="6" class="b"/>
+  <text x="602" y="94" text-anchor="middle" font-weight="bold">Player (AR camera)</text>
+  <text x="602" y="110" text-anchor="middle" class="s">PlayerHealth : IDamageable</text>
+  <text x="602" y="123" text-anchor="middle" class="s">PlayerWeapon</text>
+  <text x="602" y="136" text-anchor="middle" class="s">GameSession (score/time)</text>
+  <text x="602" y="149" text-anchor="middle" class="s">Leaderboard (PlayerPrefs)</text>
+  <!-- bottom row -->
+  <rect x="100" y="190" width="170" height="50" rx="6" class="b"/>
+  <text x="185" y="208" text-anchor="middle" font-weight="bold">ProjectilePool ×2</text>
+  <text x="185" y="224" text-anchor="middle" class="s">ObjectPool&lt;Projectile&gt; (pre-warmed)</text>
+  <rect x="290" y="190" width="150" height="50" rx="6" class="m"/>
+  <text x="365" y="210" text-anchor="middle" class="t">GameEvents</text>
+  <text x="365" y="225" text-anchor="middle" fill="#bfeff9" font-size="9.5">Observer hub</text>
+  <rect x="460" y="190" width="215" height="50" rx="6" class="b"/>
+  <text x="567" y="208" text-anchor="middle" font-weight="bold">UIManager ▸ UIPanel subclasses</text>
+  <text x="567" y="224" text-anchor="middle" class="s">Menu · Leaderboard · Placement · HUD · GameOver</text>
+  <rect x="20" y="190" width="70" height="50" rx="6" class="b"/>
+  <text x="55" y="210" text-anchor="middle" font-weight="bold">Audio</text>
+  <text x="55" y="224" text-anchor="middle" class="s">Manager</text>
+  <!-- links -->
+  <path class="l" d="M300,52 L120,77"/><path class="l" d="M330,52 L270,77"/><path class="l" d="M360,52 L430,77"/><path class="l" d="M390,52 L590,77"/>
+  <path class="l" d="M435,158 L240,189"/><path class="l" d="M580,158 L220,189"/>
+  <path class="l" d="M600,158 L400,189"/><path class="l" d="M460,158 L380,189"/>
+  <path class="l" d="M440,215 L459,215"/>
+  <text x="450" y="236" text-anchor="middle" class="s">events</text>
+</svg>
+</div>
+
+<h2>2. OOP structure</h2>
+<table>
+<tr><th style="width:17%">Principle</th><th>Where it is applied</th></tr>
+<tr><td><b>Encapsulation</b></td><td>State lives in private fields with read-only properties: <code>GameSession.Score</code> only changes through <code>RegisterKill()</code>, <code>PlayerHealth.Current</code> only through <code>TakeDamage()</code>/<code>ResetHealth()</code>, and <code>Leaderboard</code> hides its JSON/PlayerPrefs storage behind <code>Add()</code> and <code>Sessions</code>. Inspector values use <code>[SerializeField] private</code>.</td></tr>
+<tr><td><b>Abstraction</b></td><td><code>IDamageable</code> (Team, IsAlive, TakeDamage) lets projectiles and melee attacks hurt anything without knowing concrete types. <code>IPoolable</code> abstracts pool reset hooks. Abstract classes <code>Enemy</code>, <code>GameState</code> and <code>UIPanel</code> define the contract without the details.</td></tr>
+<tr><td><b>Inheritance</b></td><td><code>Enemy</code> → <code>MeleeEnemy</code>, <code>ShooterEnemy</code> share health, chasing, facing, cooldown, hit feedback and death. <code>GameState</code> → 4 states; <code>UIPanel</code> → 5 panels; <code>Singleton&lt;T&gt;</code> → <code>GameManager</code>, <code>AudioManager</code>.</td></tr>
+<tr><td><b>Polymorphism</b></td><td><code>Enemy.Update()</code> calls the abstract <code>StoppingDistance</code> and <code>Attack()</code>: the Brute stops at 0.35 m and swings, while the Sentinel stops at 1.4 m and fires. <code>Animate()</code> is virtual (waddle vs. hover). The state machine only calls <code>Enter/Tick/Exit</code>, and UIManager only calls <code>Build/Show/Hide/Tick</code> on any panel.</td></tr>
+</table>
+
+<div class="two avoid">
+<div>
+<h3>Enemy comparison</h3>
+<table>
+<tr><th></th><th>Melee "Brute"</th><th>Shooter "Sentinel"</th></tr>
+<tr><td>Model</td><td>Red horned walker</td><td>Blue hover drone + cannon</td></tr>
+<tr><td>Bullets to kill</td><td>3</td><td>5</td></tr>
+<tr><td>Stops at</td><td>0.35 m</td><td>1.4 m</td></tr>
+<tr><td>Attack range</td><td>0.5 m (contact)</td><td>2.2 m (projectile)</td></tr>
+<tr><td>Damage / cooldown</td><td>15 / 1.1 s</td><td>8 per shot / 1.6 s</td></tr>
+<tr><td>Score</td><td>100</td><td>150</td></tr>
+</table>
+</div>
+<div>
+<h3>Difficulty (bonus)</h3>
+<table>
+<tr><th></th><th>Easy</th><th>Normal</th><th>Hard</th></tr>
+<tr><td>Match length</td><td>60 s</td><td>90 s</td><td>120 s</td></tr>
+<tr><td>Player HP</td><td>150</td><td>100</td><td>80</td></tr>
+<tr><td>Spawn interval</td><td>3.2 s</td><td>2.4 s</td><td>1.6 s</td></tr>
+<tr><td>Max enemies</td><td>4</td><td>6</td><td>9</td></tr>
+<tr><td>Speed / damage ×</td><td>0.8 / 0.6</td><td>1 / 1</td><td>1.3 / 1.4</td></tr>
+<tr><td>Score ×</td><td>0.8</td><td>1.0</td><td>1.5</td></tr>
+</table>
+</div>
+</div>
+<p>Each level is a <code>DifficultySettings</code> ScriptableObject asset, so balancing needs no code changes.</p>
+
+<h2>3. Design patterns used and why</h2>
+<table>
+<tr><th style="width:17%">Pattern</th><th style="width:30%">Classes</th><th>Why</th></tr>
+<tr><td><b>Object Pool</b></td><td><code>ObjectPool&lt;T&gt;</code>, <code>ProjectilePool</code>, <code>Projectile : IPoolable</code></td><td>Bullets are fired many times per second. Creating/destroying them causes GC spikes and frame drops on phones, which is especially bad for AR tracking.</td></tr>
+<tr><td><b>State</b></td><td><code>GameState</code>, <code>GameStateMachine</code>, 4 concrete states</td><td>Each phase owns its setup/teardown (e.g. <code>PlayingState.Exit()</code> wipes enemies and bullets), which avoids a large switch and makes Start → Play → End transitions explicit.</td></tr>
+<tr><td><b>Singleton</b></td><td><code>Singleton&lt;T&gt;</code> → <code>GameManager</code>, <code>AudioManager</code></td><td>Exactly one coordinator and one audio owner, reachable from anywhere; duplicates self-destroy.</td></tr>
+<tr><td><b>Factory</b></td><td><code>EnemyFactory</code></td><td>Only one class maps <code>EnemyType</code> → prefab and injects dependencies (<code>EnemyContext</code>: target, difficulty, enemy bullet pool). New enemy types need no spawner changes.</td></tr>
+<tr><td><b>Observer</b></td><td><code>GameEvents</code>, <code>HudPanel</code>, <code>PlayingState</code></td><td>Health, score, kills and time changes are broadcast. The HUD subscribes in <code>OnShow</code> and unsubscribes in <code>OnHide</code>, so gameplay stays independent of UI.</td></tr>
+</table>
+
+<h2>4. Object Pool implementation</h2>
+<ul>
+<li><b>Pre-initialised:</b> <code>ProjectilePool.Awake()</code> creates <code>ObjectPool&lt;Projectile&gt;</code>, which instantiates all objects up front (40 player bullets, 30 enemy bullets), deactivates them and pushes them onto a <code>Stack</code>. This is the only <code>Instantiate</code> for bullets.</li>
+<li><b>Get:</b> pops an inactive bullet, sets position/rotation, activates it and calls <code>OnTakenFromPool()</code>. If the pool is empty, the <b>oldest active bullet is recycled</b> (tracked in a <code>LinkedList</code>) instead of allocating, so there is never an Instantiate during gameplay.</li>
+<li><b>Release:</b> on hit or after its 3 s lifetime, the bullet calls back to its owner pool: <code>OnReturnedToPool()</code> → deactivate → push. Double releases are ignored.</li>
+<li><b>Proper reset:</b> age, speed, damage, direction and team are cleared, and the <code>TrailRenderer</code> is cleared and toggled so no streak is drawn from the previous position. <code>ReleaseAll()</code> runs when a match ends.</li>
+<li><b>Hit detection:</b> each frame the bullet sphere-casts along its path (no tunnelling at AR scale) and damages the nearest <code>IDamageable</code> whose <code>Team</code> differs from the shooter's.</li>
+</ul>
+
+<h2>5. Sound system structure and sources</h2>
+<p><code>AudioManager</code> (Singleton) is the <b>only owner of AudioSources</b>. Enemies and bullets have none, which avoids duplicate components:
+one 2D source for UI/player sounds (<code>PlayOneShot</code>, so rapid shots overlap on one source), one looping 2D music source, and a fixed
+round-robin pool of <b>6 spatial 3D sources</b> (linear roll-off 0.3–6 m, tuned for room-scale AR) that are moved to the enemy's position for positional
+sounds. Clips load from <code>Resources/Audio</code> by the <code>SoundId</code> enum name, with per-sound volume and a slight random pitch to avoid repetition.</p>
+<table>
+<tr><th>Event (required ★)</th><th>SoundId</th><th>Triggered in</th><th>2D / 3D</th></tr>
+<tr><td>★ Player shoot</td><td>PlayerShoot</td><td><code>PlayerWeapon.Fire()</code></td><td>2D</td></tr>
+<tr><td>★ Player death</td><td>PlayerDeath</td><td><code>PlayerHealth.TakeDamage()</code> at 0 HP</td><td>2D</td></tr>
+<tr><td>★ Enemy spawn</td><td>EnemySpawn</td><td><code>EnemySpawner.SpawnOne()</code></td><td>3D</td></tr>
+<tr><td>★ Enemy shoot (Shooter)</td><td>EnemyShoot</td><td><code>ShooterEnemy.Attack()</code></td><td>3D</td></tr>
+<tr><td>★ Enemy damage (Melee attack)</td><td>MeleeAttack</td><td><code>MeleeEnemy.Attack()</code></td><td>3D</td></tr>
+<tr><td>Player hurt · Enemy hit · Enemy death</td><td>PlayerHurt · EnemyHit · EnemyDeath</td><td>PlayerHealth · Enemy</td><td>2D · 3D · 3D</td></tr>
+<tr><td>UI click · Arena placed · Victory · Ambient</td><td>UIClick · Place · Victory · Ambient</td><td>UIFactory · ARPlacementController · GameOverState · MainMenuState</td><td>2D · 3D · 2D · loop</td></tr>
+</table>
+<p><b>Sources:</b> all 12 clips are original and were synthesised by <code>Tools/generate_audio.py</code> (sine/square/saw oscillators, pitch sweeps, filtered noise, envelopes;
+16-bit mono 44.1 kHz WAV). The ambient loop uses only frequencies that complete whole cycles in 16 s, so it loops seamlessly.</p>
+
+<h2>6. AR implementation notes</h2>
+<ul>
+<li><b>Plane detection:</b> <code>ARPlaneManager.requestedDetectionMode = Horizontal</code>. The default visualiser is replaced by <code>NamedPlaneVisualizer</code>, which triangulates each plane's boundary into its own mesh and maps UVs in metres (0.6 m per tile), so the texture reading <b>JOSHUA CHUKWUEBUKA MOSES</b> tiles across the real floor. It only renders while the plane is <code>Tracking</code> and not subsumed.</li>
+<li><b>Tap-to-place:</b> <code>ARRaycastManager.Raycast(PlaneWithinPolygon)</code> → <code>ARAnchorManager.AttachAnchor(plane, pose)</code>, and the arena is parented to the anchor. After placement, later taps are ignored, the plane manager is disabled (no new planes) and trackers are hidden.</li>
+<li><b>Spawning on planes:</b> at placement, <code>PlaneSpawnArea</code> stores every horizontal plane polygon in arena-local space. Spawns pick random points 0.9–2.2 m from the base and at least 1.1 m from the player, then keep only points inside a real plane polygon.</li>
+<li><b>Leaderboard:</b> <code>SessionRecord</code> list serialised with <code>JsonUtility</code> into <code>PlayerPrefs</code>; the newest record is inserted first and the list is trimmed to 5.</li>
+</ul>
+
+</body>
+</html>
