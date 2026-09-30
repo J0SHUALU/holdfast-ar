@@ -259,8 +259,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eff6b302f04f942e38786eebf50e0092, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::HoldfastAR.Enemies.EnemyFactory
-  meleePrefab: {fileID: 0}
-  shooterPrefab: {fileID: 0}
+  meleePrefab: {fileID: 6341300718869510621, guid: 77382179b2583445d90ebe1a6c3ab507, type: 3}
+  shooterPrefab: {fileID: 8706517414396980339, guid: afbe40e5bf0b449058befcc42a87c0fc, type: 3}
   enemyProjectilePool: {fileID: 1730428264}
 --- !u!114 &360356432
 MonoBehaviour:
