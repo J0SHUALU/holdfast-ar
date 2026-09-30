@@ -19,6 +19,9 @@ namespace HoldfastAR.States
 
         public override void Enter()
         {
+            // Show the HUD first so it is subscribed before the session broadcasts its starting values.
+            Game.UI.ShowHud();
+
             DifficultySettings difficulty = Game.SelectedDifficulty;
             _session = new GameSession(difficulty);
             Game.CurrentSession = _session;
@@ -27,7 +30,6 @@ namespace HoldfastAR.States
             GameEvents.EnemyKilled += OnEnemyKilled;
             GameEvents.PlayerDied += OnPlayerDied;
 
-            Game.UI.ShowHud();
             Game.PlayerHealth.ResetHealth(difficulty.playerMaxHealth);
             Game.PlayerWeapon.ResetWeapon();
             Game.PlayerWeapon.CanFire = true;
