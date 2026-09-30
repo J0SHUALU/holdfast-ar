@@ -70,7 +70,9 @@ namespace HoldfastAR.AR
 
         public void CancelPlacement() => _listening = false;
 
-        private void Update()
+        // LateUpdate so the EventSystem has already processed this frame's touch,
+        // which makes the "is this tap on a UI button?" check reliable.
+        private void LateUpdate()
         {
             if (!_listening || IsPlaced || raycastManager == null) return;
             if (!InputHelper.TryGetWorldTap(out Vector2 screenPoint)) return;
