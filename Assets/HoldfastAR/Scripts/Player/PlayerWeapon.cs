@@ -42,7 +42,7 @@ namespace HoldfastAR.Player
         private void Fire()
         {
             Transform cam = transform;
-            Vector3 origin = muzzle != null ? muzzle.position : cam.position + cam.forward * 0.15f;
+            Vector3 origin = muzzle != null ? muzzle.position + muzzle.forward * 0.09f : cam.position + cam.forward * 0.15f;
             Vector3 aimPoint = cam.position + cam.forward * 8f;   // converge on the crosshair
             pool.Fire(origin, aimPoint - origin, projectileSpeed, damage, Team.Player);
 
