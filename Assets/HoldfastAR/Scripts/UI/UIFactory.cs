@@ -16,7 +16,7 @@ namespace HoldfastAR.UI
 
         public static Font Font => _font != null ? _font : (_font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf"));
 
-        /// <summary>A 9-sliced rounded rectangle generated at runtime.</summary>
+        /// <summary>A 9-sliced rounded rectangle built at runtime.</summary>
         public static Sprite Rounded
         {
             get
