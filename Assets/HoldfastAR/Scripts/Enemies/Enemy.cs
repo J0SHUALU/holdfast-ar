@@ -57,6 +57,9 @@ namespace HoldfastAR.Enemies
         /// <summary>Performs this enemy's attack. Only called when in range and off cooldown.</summary>
         protected abstract void Attack(float distanceToTarget);
 
+        /// <summary>Editor hook: subclasses set their own default stats here.</summary>
+        protected virtual void Reset() { }
+
         protected virtual void Awake()
         {
             if (model == null) model = transform;
