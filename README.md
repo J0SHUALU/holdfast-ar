@@ -66,6 +66,8 @@ Docs/       Technical documentation (PDF + HTML source) and the submission docum
 3. In **Project Settings → XR Plug-in Management → Android**, make sure **Google ARCore** is ticked. Run **Project Validation → Fix All** if anything is flagged.
 4. **File → Build Profiles → Android → Switch Platform**, plug in an ARCore-supported phone, then **Build And Run**.
 
+`Assets/Plugins/Android/gradleTemplate.properties` sets `android.uniquePackageNames=false`. Keep it: without it Gradle stops at the manifest merge because two ARCore libraries share the `com.google.ar.core` namespace.
+
 ## Building (iOS)
 
 1. Install the iOS Build Support module for Unity 6 (6000.4) and Xcode on a Mac.
