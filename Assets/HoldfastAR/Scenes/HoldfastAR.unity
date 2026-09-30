@@ -765,7 +765,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 28d18bd2cdeba4b79871503f6ff7805e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::HoldfastAR.Combat.ProjectilePool
-  prefab: {fileID: 0}
+  prefab: {fileID: 1174257101152080789, guid: 06d76071c95f14b38a1f9357063566bc, type: 3}
   initialSize: 30
 --- !u!4 &1730428265
 Transform:
@@ -865,7 +865,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 28d18bd2cdeba4b79871503f6ff7805e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::HoldfastAR.Combat.ProjectilePool
-  prefab: {fileID: 0}
+  prefab: {fileID: 5172295491011059567, guid: 95faad5af3c2d4dd898257cf217cffb8, type: 3}
   initialSize: 40
 --- !u!4 &1790843428
 Transform:
