@@ -99,7 +99,7 @@ namespace HoldfastAR.UI
 
         private static void EnsureEventSystem()
         {
-            if (FindFirstObjectByType<EventSystem>() != null) return;
+            if (FindAnyObjectByType<EventSystem>() != null) return;
             var go = new GameObject("EventSystem");
             go.AddComponent<EventSystem>();
 #if ENABLE_INPUT_SYSTEM

@@ -47,9 +47,9 @@ namespace HoldfastAR.AR
 
         private void Awake()
         {
-            if (raycastManager == null) raycastManager = FindFirstObjectByType<ARRaycastManager>();
-            if (planeManager == null) planeManager = FindFirstObjectByType<ARPlaneManager>();
-            if (anchorManager == null) anchorManager = FindFirstObjectByType<ARAnchorManager>();
+            if (raycastManager == null) raycastManager = FindAnyObjectByType<ARRaycastManager>();
+            if (planeManager == null) planeManager = FindAnyObjectByType<ARPlaneManager>();
+            if (anchorManager == null) anchorManager = FindAnyObjectByType<ARAnchorManager>();
             _camera = Camera.main;
 
             if (planeManager != null) planeManager.requestedDetectionMode = PlaneDetectionMode.Horizontal;
