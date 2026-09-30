@@ -6,7 +6,7 @@
 | # | Deliverable | Link |
 |---|---|---|
 | 1 | GitHub repository (includes `.gitignore`; `Library/`, `Temp/`, `Logs/`, `UserSettings/`, `Build/` are excluded) | https://github.com/J0SHUALU/holdfast-ar |
-| 2 | APK build: **Android** (ARCore, ARM64, Android 7.0 / API 24+) | _paste APK link here_ |
+| 2 | APK build: **Android** (ARCore, ARM64, Android 11 / API 30+) | _paste APK link here_ |
 | 3 | Technical documentation (PDF) | https://github.com/J0SHUALU/holdfast-ar/blob/main/Docs/TechnicalDocumentation.pdf |
 | 4 | Video demonstration (on-device, starting from the Unity splash screen) | _paste video link here_ |
 
