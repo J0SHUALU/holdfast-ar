@@ -20,8 +20,6 @@ namespace HoldfastAR.UI
 
             UIFactory.Text(card, "Title", "LEADERBOARD", UITheme.HeadingSize + 10, UITheme.Accent, style: FontStyle.Bold).Height(110);
             UIFactory.Text(card, "Subtitle", $"Your latest {Leaderboard.MaxEntries} sessions", UITheme.SmallSize, UITheme.TextMuted).Height(55);
-            UIFactory.Text(card, "Header", "WHEN          MODE      SCORE   KILLS   TIME", UITheme.SmallSize - 4,
-                UITheme.TextMuted, TextAnchor.MiddleLeft, FontStyle.Bold).Height(50);
 
             for (int i = 0; i < Leaderboard.MaxEntries; i++)
             {
@@ -49,10 +47,11 @@ namespace HoldfastAR.UI
                 if (!has) continue;
 
                 SessionRecord s = sessions[i];
-                string star = i == best ? "★ " : "";
+                string bestTag = i == best ? "   BEST" : "";
                 string result = s.survived ? "SURVIVED" : "FELL";
-                _rows[i].text = $"{star}{s.date}   {s.difficulty}   <b>{s.score}</b> pts   {s.enemiesDefeated} kills   " +
-                                $"{FormatTime(s.timeSurvived)}\n<size=26>{result}</size>";
+                _rows[i].text = $"<b>#{i + 1}   {s.score} pts</b>{bestTag}\n" +
+                                $"<size=28>{s.date}  •  {s.difficulty}  •  {s.enemiesDefeated} kills  •  " +
+                                $"{FormatTime(s.timeSurvived)}  •  {result}</size>";
                 _rows[i].color = i == best ? UITheme.Gold : UITheme.Text;
             }
         }
