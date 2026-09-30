@@ -14,7 +14,7 @@ namespace HoldfastAR.UI
         {
             UIFactory.Image(Root, "Dim", UITheme.Dim).rectTransform.Stretch();
 
-            RectTransform card = UIFactory.Image(Root, "Card", UITheme.Panel, rounded: true).rectTransform
+            RectTransform card = UIFactory.Image(Root, "Card", UITheme.Card, rounded: true).rectTransform
                 .Place(new Vector2(0.5f, 0.5f), new Vector2(900, 1300));
             UIFactory.VerticalLayout(card, 28, 60);
 

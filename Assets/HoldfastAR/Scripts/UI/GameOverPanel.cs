@@ -18,7 +18,7 @@ namespace HoldfastAR.UI
         protected override void OnBuild()
         {
             UIFactory.Image(Root, "Dim", UITheme.Dim).rectTransform.Stretch();
-            RectTransform card = UIFactory.Image(Root, "Card", UITheme.Panel, rounded: true).rectTransform
+            RectTransform card = UIFactory.Image(Root, "Card", UITheme.Card, rounded: true).rectTransform
                 .Place(new Vector2(0.5f, 0.5f), new Vector2(900, 1320));
             UIFactory.VerticalLayout(card, 22, 60);
 
