@@ -22,7 +22,8 @@ namespace HoldfastAR.UI
                 .Place(new Vector2(0.5f, 0.5f), new Vector2(900, 1320));
             UIFactory.VerticalLayout(card, 22, 60);
 
-            _title = UIFactory.Text(card, "Title", "", UITheme.TitleSize - 10, UITheme.Accent, style: FontStyle.Bold).Height(130);
+            _title = UIFactory.Text(card, "Title", "", UITheme.TitleSize - 10, UITheme.Accent, style: FontStyle.Bold)
+                .SingleLine(UITheme.HeadingSize).Height(130);
             _subtitle = UIFactory.Text(card, "Subtitle", "", UITheme.BodySize, UITheme.TextMuted).Height(70);
 
             _score = StatRow(card, "FINAL SCORE");

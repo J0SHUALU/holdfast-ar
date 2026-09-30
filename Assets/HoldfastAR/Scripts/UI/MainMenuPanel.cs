@@ -18,7 +18,8 @@ namespace HoldfastAR.UI
                 .Place(new Vector2(0.5f, 0.5f), new Vector2(900, 1300));
             UIFactory.VerticalLayout(card, 28, 60);
 
-            UIFactory.Text(card, "Title", "HOLDFAST AR", UITheme.TitleSize, UITheme.Accent, style: FontStyle.Bold).Height(140);
+            UIFactory.Text(card, "Title", "HOLDFAST AR", UITheme.TitleSize, UITheme.Accent, style: FontStyle.Bold)
+                .SingleLine(UITheme.HeadingSize).Height(140);
             UIFactory.Text(card, "Subtitle", "Hold your ground. Survive the swarm.", UITheme.BodySize, UITheme.TextMuted).Height(70);
             UIFactory.Text(card, "DifficultyLabel", "DIFFICULTY", UITheme.SmallSize, UITheme.TextMuted, style: FontStyle.Bold).Height(60);
 

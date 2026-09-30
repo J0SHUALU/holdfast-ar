@@ -129,6 +129,19 @@ namespace HoldfastAR.UI
             return layout;
         }
 
+        /// <summary>
+        /// Keeps a heading on one line: the font shrinks (down to <paramref name="minSize"/>)
+        /// until the text fits the width instead of wrapping onto a second line.
+        /// </summary>
+        public static Text SingleLine(this Text text, int minSize)
+        {
+            text.resizeTextForBestFit = true;
+            text.resizeTextMaxSize = text.fontSize;
+            text.resizeTextMinSize = Mathf.Min(minSize, text.fontSize);
+            text.verticalOverflow = VerticalWrapMode.Truncate;
+            return text;
+        }
+
         /// <summary>Sets the preferred height of an element inside a layout group.</summary>
         public static T Height<T>(this T component, float height) where T : Component
         {
