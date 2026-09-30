@@ -311,9 +311,9 @@ MonoBehaviour:
   enemyProjectiles: {fileID: 1730428264}
   ui: {fileID: 360356433}
   difficulties:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  - {fileID: 11400000, guid: a344ac2d478404e42944bcf2201b608b, type: 2}
+  - {fileID: 11400000, guid: 09bda6869b895448a93cd6b9f59d2c37, type: 2}
+  - {fileID: 11400000, guid: 4e13c53a7a90c4abab201933784d9173, type: 2}
 --- !u!4 &360356435
 Transform:
   m_ObjectHideFlags: 0

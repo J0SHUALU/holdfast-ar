@@ -55,9 +55,30 @@ namespace HoldfastAR
             Application.targetFrameRate = 60;
             Screen.sleepTimeout = SleepTimeout.NeverSleep;
 
-            if (difficulties == null || difficulties.Length == 0) difficulties = DifficultySettings.CreateDefaults();
+            difficulties = ValidDifficulties(difficulties);
             _difficultyIndex = Mathf.Clamp(PlayerPrefs.GetInt(DifficultyPrefsKey, 1), 0, difficulties.Length - 1);
             Leaderboard = new Leaderboard();
+        }
+
+        /// <summary>
+        /// Drops empty slots from the Inspector array so the menu never reads a null entry.
+        /// Falls back to the built-in presets when nothing usable is assigned.
+        /// </summary>
+        private static DifficultySettings[] ValidDifficulties(DifficultySettings[] assigned)
+        {
+            var valid = new System.Collections.Generic.List<DifficultySettings>();
+            if (assigned != null)
+                foreach (DifficultySettings d in assigned)
+                    if (d != null) valid.Add(d);
+
+            if (valid.Count == 0)
+            {
+                Debug.LogWarning("GameManager: no difficulty assets assigned, using built-in presets.");
+                return DifficultySettings.CreateDefaults();
+            }
+            if (assigned != null && valid.Count < assigned.Length)
+                Debug.LogWarning($"GameManager: {assigned.Length - valid.Count} empty difficulty slot(s) ignored.");
+            return valid.ToArray();
         }
 
         private void Start()
