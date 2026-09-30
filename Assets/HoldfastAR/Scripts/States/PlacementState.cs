@@ -1,8 +1,8 @@
 namespace HoldfastAR.States
 {
     /// <summary>
-    /// Scan the floor and tap to place the arena. If the arena was already placed in an
-    /// earlier round we skip straight to Playing, so only one instance ever exists.
+    /// Scan the floor and tap to place the arena. GameManager skips this state when the
+    /// arena was already placed in an earlier round, so only one instance ever exists.
     /// </summary>
     public class PlacementState : GameState
     {
@@ -12,11 +12,6 @@ namespace HoldfastAR.States
 
         public override void Enter()
         {
-            if (Game.Placement.IsPlaced)
-            {
-                Game.BeginMatch();
-                return;
-            }
             Game.Placement.ArenaPlaced += OnArenaPlaced;
             Game.Placement.BeginPlacement();
             Game.UI.ShowPlacement();
