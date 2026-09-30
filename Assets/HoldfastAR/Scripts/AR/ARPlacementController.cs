@@ -114,7 +114,12 @@ namespace HoldfastAR.AR
             arena.transform.localRotation = Quaternion.identity;
             Arena = arena.transform;
 
-            if (planeManager != null) SpawnArea.Capture(planeManager.trackables, Arena);
+            if (planeManager != null)
+            {
+                var planes = new List<ARPlane>();
+                foreach (ARPlane p in planeManager.trackables) planes.Add(p);
+                SpawnArea.Capture(planes, Arena);
+            }
 
             if (stopPlaneDetectionAfterPlacement && planeManager != null)
             {
