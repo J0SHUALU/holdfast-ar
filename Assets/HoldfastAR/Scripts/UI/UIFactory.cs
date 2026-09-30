@@ -132,7 +132,8 @@ namespace HoldfastAR.UI
         /// <summary>Sets the preferred height of an element inside a layout group.</summary>
         public static T Height<T>(this T component, float height) where T : Component
         {
-            LayoutElement le = component.GetComponent<LayoutElement>() ?? component.gameObject.AddComponent<LayoutElement>();
+            LayoutElement le = component.GetComponent<LayoutElement>();
+            if (le == null) le = component.gameObject.AddComponent<LayoutElement>();
             le.preferredHeight = height;
             le.minHeight = height;
             return component;
