@@ -5,30 +5,31 @@
 <title>Holdfast AR - Technical Documentation</title>
 <style>
   @page { size: A4; margin: 14mm 15mm; }
-  body { font-family: "Liberation Sans", Arial, sans-serif; font-size: 9.6pt; line-height: 1.38; color: #14212b; margin: 0; }
-  h1 { font-size: 19pt; margin: 0 0 2px; color: #0b5d73; }
-  .meta { color: #4a6270; margin-bottom: 8px; font-size: 9pt; }
-  h2 { font-size: 11.6pt; color: #0b5d73; border-bottom: 1.5px solid #28c8e6; padding-bottom: 2px; margin: 12px 0 5px; }
+  body { font-family: "Liberation Sans", Arial, sans-serif; font-size: 9.6pt; line-height: 1.38; color: #1d1418; margin: 0; }
+  h1 { font-size: 19pt; margin: 0 0 2px; color: #8a1420; }
+  .meta { color: #70484c; margin-bottom: 8px; font-size: 9pt; }
+  h2 { font-size: 11.6pt; color: #8a1420; border-bottom: 1.5px solid #e5453b; padding-bottom: 2px; margin: 12px 0 5px; }
   h3 { font-size: 10pt; margin: 8px 0 3px; }
   p { margin: 3px 0 5px; }
   ul { margin: 2px 0 5px 16px; padding: 0; }
   li { margin: 1px 0; }
-  code { font-family: "Liberation Mono", monospace; font-size: 8.6pt; background: #eef6f8; padding: 0 3px; border-radius: 3px; }
+  code { font-family: "Liberation Mono", monospace; font-size: 8.6pt; background: #f8eeee; padding: 0 3px; border-radius: 3px; }
   table { border-collapse: collapse; width: 100%; margin: 4px 0 6px; font-size: 8.8pt; }
-  th, td { border: 1px solid #c9dde3; padding: 3px 5px; text-align: left; vertical-align: top; }
-  th { background: #e3f4f8; }
+  th, td { border: 1px solid #e3c9cb; padding: 3px 5px; text-align: left; vertical-align: top; }
+  th { background: #f8e3e4; }
   .diagram { text-align: center; margin: 4px 0; }
   .two { display: flex; gap: 14px; }
   .two > div { flex: 1; }
   .avoid { break-inside: avoid; }
-  pre { font-family: "Liberation Mono", monospace; font-size: 8.2pt; background: #f3f8fa; border: 1px solid #d7e7ec; padding: 5px 7px; margin: 3px 0 6px; white-space: pre-wrap; }
+  pre { font-family: "Liberation Mono", monospace; font-size: 8.2pt; background: #faf3f3; border: 1px solid #ecd7d8; padding: 5px 7px; margin: 3px 0 6px; white-space: pre-wrap; }
 </style>
 </head>
 <body>
 
 <h1>Holdfast AR: Technical Documentation</h1>
-<div class="meta">Mobile AR survival shooter · Unity 6 + AR Foundation (ARCore / ARKit) · Developer: <b>Joshua Chukwuebuka Moses</b></div>
+<div class="meta">Mobile AR survival shooter · Portrait · Unity 6 + AR Foundation (ARCore / ARKit) · Developer: <b>Joshua Chukwuebuka Moses</b></div>
 
+<p><b>Story:</b> you are the last colonist on the frontier world Kepler-9. Your landing dome has come down on the only flat ground you can find (the real floor), and the planet's natives, alien grunts and armoured bug mechs, are closing in. Hold the dome with your ray gun until the evac ship arrives (the match timer).</p>
 <h2>1. Architecture overview</h2>
 <p>The game is split into small systems that talk through a <b>GameManager</b> (the coordinator) and a static
 <b>GameEvents</b> hub. Gameplay code never references UI classes: it raises events, and the HUD listens.
@@ -36,54 +37,47 @@ The match flow is driven by a <b>state machine</b>: <code>MainMenu → Placement
 
 <div class="diagram">
 <svg width="690" height="250" viewBox="0 0 690 250" xmlns="http://www.w3.org/2000/svg" font-family="Liberation Sans, Arial" font-size="10.5">
-  <defs><marker id="a" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#3b6b7a"/></marker></defs>
-  <style>.b{fill:#e8f7fb;stroke:#28a9c6;stroke-width:1.3;rx:6}.m{fill:#0b5d73}.t{fill:#fff;font-weight:bold}.l{stroke:#3b6b7a;stroke-width:1.2;fill:none;marker-end:url(#a)}.s{font-size:9px;fill:#40606c}</style>
-  <!-- GameManager -->
+  <defs><marker id="a" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#6b3b40"/></marker></defs>
+  <style>.b{fill:#fbeceb;stroke:#d0453c;stroke-width:1.3;rx:6}.m{fill:#8a1420}.t{fill:#fff;font-weight:bold}.l{stroke:#6b3b40;stroke-width:1.2;fill:none;marker-end:url(#a)}.s{font-size:9px;fill:#6c4046}</style>
   <rect x="255" y="8" width="180" height="44" rx="6" class="m"/>
   <text x="345" y="27" text-anchor="middle" class="t">GameManager (Singleton)</text>
-  <text x="345" y="42" text-anchor="middle" fill="#bfeff9" font-size="9.5">owns GameStateMachine</text>
-  <!-- states -->
+  <text x="345" y="42" text-anchor="middle" fill="#ffd6d2" font-size="9.5">owns GameStateMachine</text>
   <rect x="20" y="78" width="150" height="80" rx="6" class="b"/>
   <text x="95" y="94" text-anchor="middle" font-weight="bold">States (State pattern)</text>
   <text x="95" y="110" text-anchor="middle" class="s">MainMenuState</text>
   <text x="95" y="123" text-anchor="middle" class="s">PlacementState</text>
   <text x="95" y="136" text-anchor="middle" class="s">PlayingState</text>
   <text x="95" y="149" text-anchor="middle" class="s">GameOverState</text>
-  <!-- AR -->
   <rect x="190" y="78" width="150" height="80" rx="6" class="b"/>
   <text x="265" y="94" text-anchor="middle" font-weight="bold">AR layer</text>
   <text x="265" y="110" text-anchor="middle" class="s">ARPlacementController</text>
   <text x="265" y="123" text-anchor="middle" class="s">NamedPlaneVisualizer</text>
   <text x="265" y="136" text-anchor="middle" class="s">PlaneSpawnArea</text>
   <text x="265" y="149" text-anchor="middle" class="s">ARPlane / Raycast / Anchor mgrs</text>
-  <!-- Enemies -->
   <rect x="360" y="78" width="150" height="80" rx="6" class="b"/>
   <text x="435" y="94" text-anchor="middle" font-weight="bold">Enemies</text>
   <text x="435" y="110" text-anchor="middle" class="s">EnemySpawner</text>
   <text x="435" y="123" text-anchor="middle" class="s">EnemyFactory (Factory)</text>
   <text x="435" y="136" text-anchor="middle" class="s">Enemy ▸ MeleeEnemy</text>
   <text x="435" y="149" text-anchor="middle" class="s">Enemy ▸ ShooterEnemy</text>
-  <!-- Player -->
   <rect x="530" y="78" width="145" height="80" rx="6" class="b"/>
   <text x="602" y="94" text-anchor="middle" font-weight="bold">Player (AR camera)</text>
   <text x="602" y="110" text-anchor="middle" class="s">PlayerHealth : IDamageable</text>
   <text x="602" y="123" text-anchor="middle" class="s">PlayerWeapon</text>
   <text x="602" y="136" text-anchor="middle" class="s">GameSession (score/time)</text>
   <text x="602" y="149" text-anchor="middle" class="s">Leaderboard (PlayerPrefs)</text>
-  <!-- bottom row -->
   <rect x="100" y="190" width="170" height="50" rx="6" class="b"/>
   <text x="185" y="208" text-anchor="middle" font-weight="bold">ProjectilePool ×2</text>
   <text x="185" y="224" text-anchor="middle" class="s">ObjectPool&lt;Projectile&gt; (pre-warmed)</text>
   <rect x="290" y="190" width="150" height="50" rx="6" class="m"/>
   <text x="365" y="210" text-anchor="middle" class="t">GameEvents</text>
-  <text x="365" y="225" text-anchor="middle" fill="#bfeff9" font-size="9.5">Observer hub</text>
+  <text x="365" y="225" text-anchor="middle" fill="#ffd6d2" font-size="9.5">Observer hub</text>
   <rect x="460" y="190" width="215" height="50" rx="6" class="b"/>
   <text x="567" y="208" text-anchor="middle" font-weight="bold">UIManager ▸ UIPanel subclasses</text>
   <text x="567" y="224" text-anchor="middle" class="s">Menu · Leaderboard · Placement · HUD · GameOver</text>
   <rect x="20" y="190" width="70" height="50" rx="6" class="b"/>
   <text x="55" y="210" text-anchor="middle" font-weight="bold">Audio</text>
   <text x="55" y="224" text-anchor="middle" class="s">Manager</text>
-  <!-- links -->
   <path class="l" d="M300,52 L120,77"/><path class="l" d="M330,52 L270,77"/><path class="l" d="M360,52 L430,77"/><path class="l" d="M390,52 L590,77"/>
   <path class="l" d="M435,158 L240,189"/><path class="l" d="M580,158 L220,189"/>
   <path class="l" d="M600,158 L400,189"/><path class="l" d="M460,158 L380,189"/>
@@ -98,7 +92,7 @@ The match flow is driven by a <b>state machine</b>: <code>MainMenu → Placement
 <tr><td><b>Encapsulation</b></td><td>State lives in private fields with read-only properties: <code>GameSession.Score</code> only changes through <code>RegisterKill()</code>, <code>PlayerHealth.Current</code> only through <code>TakeDamage()</code>/<code>ResetHealth()</code>, and <code>Leaderboard</code> hides its JSON/PlayerPrefs storage behind <code>Add()</code> and <code>Sessions</code>. Inspector values use <code>[SerializeField] private</code>.</td></tr>
 <tr><td><b>Abstraction</b></td><td><code>IDamageable</code> (Team, IsAlive, TakeDamage) lets projectiles and melee attacks hurt anything without knowing concrete types. <code>IPoolable</code> abstracts pool reset hooks. Abstract classes <code>Enemy</code>, <code>GameState</code> and <code>UIPanel</code> define the contract without the details.</td></tr>
 <tr><td><b>Inheritance</b></td><td><code>Enemy</code> → <code>MeleeEnemy</code>, <code>ShooterEnemy</code> share health, chasing, facing, cooldown, hit feedback and death. <code>GameState</code> → 4 states; <code>UIPanel</code> → 5 panels; <code>Singleton&lt;T&gt;</code> → <code>GameManager</code>, <code>AudioManager</code>.</td></tr>
-<tr><td><b>Polymorphism</b></td><td><code>Enemy.Update()</code> calls the abstract <code>StoppingDistance</code> and <code>Attack()</code>: the Brute stops at 0.35 m and swings, while the Sentinel stops at 1.4 m and fires. <code>Animate()</code> is virtual (waddle vs. hover). The state machine only calls <code>Enter/Tick/Exit</code>, and UIManager only calls <code>Build/Show/Hide/Tick</code> on any panel.</td></tr>
+<tr><td><b>Polymorphism</b></td><td><code>Enemy.Update()</code> calls the abstract <code>StoppingDistance</code> and <code>Attack()</code>: the Brute stops at 0.35 m and swings, while the Sentinel stops at 1.4 m and fires. Both drive the same Animator parameters (<code>Speed</code>, <code>Attack</code>, <code>Hit</code>, <code>Die</code>), so each model plays its own walk, punch or shoot, hit and death clips through one shared code path. The state machine only calls <code>Enter/Tick/Exit</code>, and UIManager only calls <code>Build/Show/Hide/Tick</code> on any panel.</td></tr>
 </table>
 
 <div class="two avoid">
@@ -106,7 +100,7 @@ The match flow is driven by a <b>state machine</b>: <code>MainMenu → Placement
 <h3>Enemy comparison</h3>
 <table>
 <tr><th></th><th>Melee "Brute"</th><th>Shooter "Sentinel"</th></tr>
-<tr><td>Model</td><td>Red horned walker</td><td>Blue hover drone + cannon</td></tr>
+<tr><td>Model</td><td>Green alien grunt (animated)</td><td>Yellow bug mech (animated)</td></tr>
 <tr><td>Bullets to kill</td><td>3</td><td>5</td></tr>
 <tr><td>Stops at</td><td>0.35 m</td><td>1.4 m</td></tr>
 <tr><td>Attack range</td><td>0.5 m (contact)</td><td>2.2 m (projectile)</td></tr>
@@ -136,7 +130,7 @@ The match flow is driven by a <b>state machine</b>: <code>MainMenu → Placement
 <tr><td><b>State</b></td><td><code>GameState</code>, <code>GameStateMachine</code>, 4 concrete states</td><td>Each phase owns its setup/teardown (e.g. <code>PlayingState.Exit()</code> wipes enemies and bullets), which avoids a large switch and makes Start → Play → End transitions explicit.</td></tr>
 <tr><td><b>Singleton</b></td><td><code>Singleton&lt;T&gt;</code> → <code>GameManager</code>, <code>AudioManager</code></td><td>Exactly one coordinator and one audio owner, reachable from anywhere; duplicates self-destroy.</td></tr>
 <tr><td><b>Factory</b></td><td><code>EnemyFactory</code></td><td>Only one class maps <code>EnemyType</code> → prefab and injects dependencies (<code>EnemyContext</code>: target, difficulty, enemy bullet pool). New enemy types need no spawner changes.</td></tr>
-<tr><td><b>Observer</b></td><td><code>GameEvents</code>, <code>HudPanel</code>, <code>PlayingState</code></td><td>Health, score, kills and time changes are broadcast. The HUD subscribes in <code>OnShow</code> and unsubscribes in <code>OnHide</code>, so gameplay stays independent of UI.</td></tr>
+<tr><td><b>Observer</b></td><td><code>GameEvents</code>, <code>HudPanel</code>, <code>SpawnMarkers</code>, <code>PlayingState</code></td><td>Health, score, kills, time and enemy spawns are broadcast; <code>SpawnMarkers</code> listens to <code>EnemySpawned</code> to show a pin over each new enemy, or an edge arrow when it is off screen. The HUD subscribes in <code>OnShow</code> and unsubscribes in <code>OnHide</code>, so gameplay stays independent of UI.</td></tr>
 </table>
 
 <h2>4. Object Pool implementation</h2>
@@ -171,8 +165,19 @@ sounds. Clips load from <code>Resources/Audio</code> by the <code>SoundId</code>
 <li><b>Plane detection:</b> <code>ARPlaneManager.requestedDetectionMode = Horizontal</code>. The default visualiser is replaced by <code>NamedPlaneVisualizer</code>, which triangulates each plane's boundary into its own mesh and maps UVs in metres (0.6 m per tile), so the texture reading <b>JOSHUA CHUKWUEBUKA MOSES</b> tiles across the real floor. It only renders while the plane is <code>Tracking</code> and not subsumed.</li>
 <li><b>Tap-to-place:</b> <code>ARRaycastManager.Raycast(PlaneWithinPolygon)</code> → <code>ARAnchorManager.AttachAnchor(plane, pose)</code>, and the arena is parented to the anchor. After placement, later taps are ignored, the plane manager is disabled (no new planes) and trackers are hidden.</li>
 <li><b>Spawning on planes:</b> at placement, <code>PlaneSpawnArea</code> stores every horizontal plane polygon in arena-local space. Spawns pick random points 0.9–2.2 m from the base and at least 1.1 m from the player, then keep only points inside a real plane polygon.</li>
+<li><b>Portrait UI:</b> every panel is built in code inside a 1080×1920 portrait frame fitted to the device safe area, using the Kenney UI Pack (Space Expansion) sprites (9-sliced, tinted to the red space palette) and the Kenney Future font. The FIRE button sits bottom-right, clear of the centred ray gun, and the gun is hidden outside a match.</li>
 <li><b>Leaderboard:</b> <code>SessionRecord</code> list serialised with <code>JsonUtility</code> into <code>PlayerPrefs</code>; the newest record is inserted first and the list is trimmed to 5.</li>
 </ul>
+
+<h2>7. Art assets and sources</h2>
+<table>
+<tr><th>Asset</th><th>Used for</th><th>Source · licence</th></tr>
+<tr><td>Ultimate Space Kit by Quaternius</td><td>Brute (Enemy Large), Sentinel (Mech), dome, rocks, plants, solar panel</td><td>poly.pizza · CC0</td></tr>
+<tr><td>Sci-Fi Gun Pack by Quaternius</td><td>Player ray gun</td><td>poly.pizza · CC0</td></tr>
+<tr><td>UI Pack (Space Expansion) by Kenney</td><td>Panels, buttons, bars, crosshair, spawn markers</td><td>kenney.nl · CC0</td></tr>
+<tr><td>Kenney Future font</td><td>All UI text and the plane tracker label</td><td>kenney.nl · CC0</td></tr>
+</table>
+<p>The app icon is a render of the Brute model framed by a red reticle. Animator Controllers, materials, the plane tracker texture and all sounds were made for this project.</p>
 
 </body>
 </html>

@@ -4,6 +4,8 @@ A mobile **Augmented Reality survival shooter** built with **Unity 6** and **AR 
 Scan your floor, tap to drop your *Holdfast* outpost onto a real surface, then survive waves of
 enemies that spawn on the detected planes and hunt you down until the timer runs out.
 
+**Story:** you are the last colonist on the frontier world Kepler-9. Your landing dome has come down on the only flat ground you can find, and the planet's natives are closing in. Hold the dome with your ray gun until the evac ship arrives.
+
 Developer: **Joshua Chukwuebuka Moses**
 
 ---
@@ -12,11 +14,11 @@ Developer: **Joshua Chukwuebuka Moses**
 
 | | |
 |---|---|
-| **Perspective** | First-person: your phone is the player. Aim with the crosshair, hold **FIRE** to shoot. |
+| **Perspective** | First-person, portrait: your phone is the player. Aim with the crosshair, hold **FIRE** to shoot. |
 | **Goal** | Survive until the timer hits 0:00. Kill enemies for score. |
 | **Lose** | Your health reaches 0. |
-| **Brute (Melee)** | Red horned walker. Rushes you and hits only at close range (0.5 m) on a 1.1 s cooldown. 3 bullets to kill, 15 damage, 100 pts. |
-| **Sentinel (Shooter)** | Blue hovering drone. Stops 1.4 m away and fires projectiles from up to 2.2 m. 5 bullets to kill, 8 damage per shot, 150 pts. |
+| **Brute (Melee)** | Green alien grunt. Rushes you and hits only at close range (0.5 m) on a 1.1 s cooldown. 3 bullets to kill, 15 damage, 100 pts. |
+| **Sentinel (Shooter)** | Yellow bug mech. Stops 1.4 m away and fires projectiles from up to 2.2 m. 5 bullets to kill, 8 damage per shot, 150 pts. |
 | **Difficulty** | Easy / Normal / Hard change match length, player HP, spawn rate, max enemies, enemy speed & damage and score multiplier. |
 
 Flow: **Main Menu → Scan & Place → Play → End Summary → Restart / Main Menu**
@@ -29,9 +31,9 @@ Flow: **Main Menu → Scan & Place → Play → End Summary → Restart / Main M
 - **Player**: health, pooled shooting, score, red-flash + vibration damage feedback, game-over trigger.
 - **Object pooling**: `ObjectPool<T>` pre-instantiates every bullet. No `Instantiate`/`Destroy` per shot; bullets are reset on reuse.
 - **Two enemy types**: `Enemy` (abstract) → `MeleeEnemy`, `ShooterEnemy`. Different models, ranges, damage and bullets-to-kill.
-- **Enemies**: spawn on detected planes, have health, flash/punch when hit, add score on death, and are wiped when the match ends.
+- **Enemies**: spawn on detected planes (a marker shows where), have health, play hit reactions, add score on death, and are wiped when the match ends.
 - **Game states**: State pattern with `MainMenuState`, `PlacementState`, `PlayingState`, `GameOverState`.
-- **UI**: start menu (title, start, leaderboard, difficulty), HUD (health, score, time), end summary (score, kills, time survived, restart, main menu).
+- **UI**: portrait layout. Start menu (title, start, leaderboard, difficulty), HUD (health, score, time, spawn markers), end summary (score, kills, time survived, restart, main menu).
 - **Leaderboard**: latest 5 sessions saved as JSON in `PlayerPrefs`, so they persist between launches.
 - **Sound**: player shoot, player death, enemy spawn, enemy shoot, melee attack, plus hit, death, UI, placement, victory and ambient music.
 
@@ -49,13 +51,14 @@ Assets/HoldfastAR/
     Combat/     Projectile, ProjectilePool
     Audio/      AudioManager, SoundId
     Data/       DifficultySettings, GameSession, Leaderboard, SessionRecord
-    UI/         UIManager, UIPanel (abstract) + MainMenu/Leaderboard/Placement/Hud/GameOver panels
+    UI/         UIManager, UIPanel (abstract) + MainMenu/Leaderboard/Placement/Hud/GameOver panels, SpawnMarkers
     GameManager.cs
   Resources/Audio/      12 original .wav sound effects
   Resources/Textures/   PlaneTrackerName.png (custom plane tracker texture)
-  Art/                  AppIcon.png (app icon)
+  Resources/UI, Fonts/  UI sprites, app icon and font
+  Art/                  Models, textures and Animator Controllers
   Prefabs/ Materials/ Scenes/ Settings/
-Tools/      Python scripts that build the audio, plane texture and app icon
+Tools/      Python scripts that build the audio and the plane texture
 Docs/       Technical documentation (PDF + HTML source) and the submission document
 ```
 
@@ -80,9 +83,15 @@ Bundle identifier: `com.joshuamoses.holdfastar` on both platforms.
 
 ## Assets & credits
 
-Everything in this project is original:
-- **Sound effects**: synthesised from scratch by `Tools/generate_audio.py` (sine/square/saw waves plus filtered noise).
+| Asset | Used for | Source | Licence |
+|---|---|---|---|
+| Ultimate Space Kit by Quaternius | Brute (Enemy Large), Sentinel (Mech), dome, rocks, plants, solar panel | poly.pizza | CC0 |
+| Sci-Fi Gun Pack by Quaternius | Player ray gun | poly.pizza | CC0 |
+| UI Pack (Space Expansion) by Kenney | Panels, buttons, bars, crosshair, spawn markers | kenney.nl | CC0 |
+| Kenney Future font | UI text and plane tracker label | kenney.nl | CC0 |
+
+Made for this project:
+- **Sound effects**: synthesised by `Tools/generate_audio.py`.
 - **Plane tracker texture**: drawn by `Tools/generate_plane_texture.py`.
-- **App icon**: drawn by `Tools/generate_app_icon.py` (`Assets/HoldfastAR/Art/AppIcon.png`), set as the Default Icon for Android and iOS.
-- **Enemy, base and blaster models**: assembled from Unity primitive meshes with custom materials.
-- **UI**: built in code with uGUI and Unity's built-in font.
+- **App icon**: a render of the Brute model inside a red reticle (`Assets/HoldfastAR/Resources/UI/AppIcon.png`), set as the Default Icon for Android and iOS.
+- **Animator Controllers, materials and UI layout**: built in Unity.
