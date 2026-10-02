@@ -2,7 +2,6 @@ using HoldfastAR.Audio;
 
 namespace HoldfastAR.States
 {
-    /// <summary>Start screen: title, start, leaderboard and difficulty selection.</summary>
     public class MainMenuState : GameState
     {
         public MainMenuState(GameManager game) : base(game) { }

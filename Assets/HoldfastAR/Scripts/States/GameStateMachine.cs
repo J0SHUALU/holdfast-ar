@@ -3,7 +3,6 @@ using UnityEngine;
 
 namespace HoldfastAR.States
 {
-    /// <summary>Holds the current GameState and performs clean transitions between states.</summary>
     public class GameStateMachine
     {
         public GameState Current { get; private set; }

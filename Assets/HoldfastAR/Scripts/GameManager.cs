@@ -10,10 +10,6 @@ using UnityEngine;
 
 namespace HoldfastAR
 {
-    /// <summary>
-    /// Top-level coordinator (Singleton). Owns the state machine and exposes the
-    /// systems that states need. Flow: MainMenu -> Placement -> Playing -> GameOver.
-    /// </summary>
     public class GameManager : Singleton<GameManager>
     {
         private const string DifficultyPrefsKey = "HoldfastAR.Difficulty";
@@ -60,10 +56,6 @@ namespace HoldfastAR
             Leaderboard = new Leaderboard();
         }
 
-        /// <summary>
-        /// Drops empty slots from the Inspector array so the menu never reads a null entry.
-        /// Falls back to the built-in presets when nothing usable is assigned.
-        /// </summary>
         private static DifficultySettings[] ValidDifficulties(DifficultySettings[] assigned)
         {
             var valid = new System.Collections.Generic.List<DifficultySettings>();
@@ -89,15 +81,12 @@ namespace HoldfastAR
 
         private void Update() => _stateMachine.Tick(Time.deltaTime);
 
-        // ---- Called by UI and states ------------------------------------------
-
         public void SelectDifficulty(int index)
         {
             _difficultyIndex = Mathf.Clamp(index, 0, difficulties.Length - 1);
             PlayerPrefs.SetInt(DifficultyPrefsKey, _difficultyIndex);
         }
 
-        /// <summary>Start button: place the arena first if it has not been placed yet.</summary>
         public void StartGame()
         {
             if (placement.IsPlaced) BeginMatch();

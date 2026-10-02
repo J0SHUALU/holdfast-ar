@@ -3,12 +3,6 @@ using UnityEngine;
 
 namespace HoldfastAR.Pooling
 {
-    /// <summary>
-    /// Generic, pre-initialised object pool (Object Pool pattern).
-    /// All instances are created up front in Prewarm(); during gameplay Get() and Release()
-    /// only toggle and reset existing objects, so there is no Instantiate/Destroy per shot.
-    /// If the pool runs dry the oldest active object is recycled instead of allocating a new one.
-    /// </summary>
     public class ObjectPool<T> where T : Component, IPoolable
     {
         private readonly T _prefab;
@@ -50,7 +44,6 @@ namespace HoldfastAR.Pooling
             }
             else
             {
-                // Pool exhausted: reuse the oldest projectile rather than instantiating.
                 item = _active.First.Value;
                 RemoveActive(item);
                 item.OnReturnedToPool();
@@ -65,7 +58,7 @@ namespace HoldfastAR.Pooling
 
         public void Release(T item)
         {
-            if (item == null || !_activeNodes.ContainsKey(item)) return; // already released
+            if (item == null || !_activeNodes.ContainsKey(item)) return;
             RemoveActive(item);
             item.OnReturnedToPool();
             item.gameObject.SetActive(false);

@@ -4,11 +4,6 @@ using UnityEngine;
 
 namespace HoldfastAR.Combat
 {
-    /// <summary>
-    /// A pooled bullet used by both the player and the Shooter enemy.
-    /// Movement is swept with a sphere cast every frame so fast bullets never tunnel
-    /// through small AR-scale targets.
-    /// </summary>
     public class Projectile : MonoBehaviour, IPoolable
     {
         [SerializeField] private float radius = 0.02f;
@@ -84,8 +79,6 @@ namespace HoldfastAR.Combat
             if (_owner != null) _owner.Release(this);
             else gameObject.SetActive(false);
         }
-
-        // ---- IPoolable ---------------------------------------------------
 
         public void OnTakenFromPool()
         {

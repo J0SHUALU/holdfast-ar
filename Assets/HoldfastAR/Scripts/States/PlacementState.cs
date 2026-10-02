@@ -1,9 +1,5 @@
 namespace HoldfastAR.States
 {
-    /// <summary>
-    /// Scan the floor and tap to place the arena. GameManager skips this state when the
-    /// arena was already placed in an earlier round, so only one instance ever exists.
-    /// </summary>
     public class PlacementState : GameState
     {
         public PlacementState(GameManager game) : base(game) { }

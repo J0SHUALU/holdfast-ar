@@ -3,7 +3,6 @@ using System.Collections.Generic;
 
 namespace HoldfastAR.Data
 {
-    /// <summary>One finished play session, as stored in the leaderboard.</summary>
     [Serializable]
     public class SessionRecord
     {
@@ -15,7 +14,6 @@ namespace HoldfastAR.Data
         public bool survived;
     }
 
-    /// <summary>JsonUtility cannot serialise a bare list, so it is wrapped.</summary>
     [Serializable]
     public class SessionHistory
     {

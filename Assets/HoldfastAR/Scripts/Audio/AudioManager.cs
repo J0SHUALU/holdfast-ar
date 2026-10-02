@@ -5,13 +5,6 @@ using UnityEngine;
 
 namespace HoldfastAR.Audio
 {
-    /// <summary>
-    /// Single owner of every AudioSource in the game (Singleton).
-    ///  - one 2D source for UI and player sounds (PlayOneShot, so overlapping shots share one source)
-    ///  - one looping 2D source for ambient music
-    ///  - a small fixed pool of 3D sources for positional enemy sounds in AR space
-    /// Enemies and bullets never carry their own AudioSource, which avoids duplicating components.
-    /// </summary>
     public class AudioManager : Singleton<AudioManager>
     {
         [Serializable]
@@ -52,7 +45,7 @@ namespace HoldfastAR.Audio
             for (int i = 0; i < spatialVoices; i++)
             {
                 AudioSource s = CreateSource($"Spatial Voice {i}", 1f);
-                s.minDistance = 0.3f;   // AR scale: enemies are metres, not tens of metres, away
+                s.minDistance = 0.3f;
                 s.maxDistance = 6f;
                 s.rolloffMode = AudioRolloffMode.Linear;
                 _spatialSources[i] = s;
@@ -81,7 +74,6 @@ namespace HoldfastAR.Audio
             return source;
         }
 
-        /// <summary>Plays a non-positional sound (UI, player weapon, player damage).</summary>
         public void Play(SoundId id, float pitchVariation = 0f)
         {
             if (!_clips.TryGetValue(id, out AudioClip clip)) return;
@@ -89,7 +81,6 @@ namespace HoldfastAR.Audio
             _uiSource.PlayOneShot(clip, _volumes[id] * masterVolume);
         }
 
-        /// <summary>Plays a sound at a world position using the next voice in the spatial pool.</summary>
         public void PlayAt(SoundId id, Vector3 position, float pitchVariation = 0.05f)
         {
             if (!_clips.TryGetValue(id, out AudioClip clip)) return;

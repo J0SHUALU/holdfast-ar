@@ -4,11 +4,6 @@ using UnityEngine;
 
 namespace HoldfastAR.Player
 {
-    /// <summary>
-    /// The player's health. Lives on the AR camera (first-person: the phone IS the player)
-    /// with a small sphere collider acting as the hitbox for Shooter bullets.
-    /// Raises PlayerDamaged for feedback and PlayerDied to trigger game over.
-    /// </summary>
     [RequireComponent(typeof(SphereCollider))]
     public class PlayerHealth : MonoBehaviour, IDamageable
     {
@@ -20,7 +15,7 @@ namespace HoldfastAR.Player
         public float MaxHealth { get; private set; } = 100f;
         public float Current { get; private set; } = 100f;
         public bool IsAlive => Current > 0f;
-        public bool Invincible { get; set; } = true; // only vulnerable while a match is running
+        public bool Invincible { get; set; } = true;
 
         private void Reset()
         {

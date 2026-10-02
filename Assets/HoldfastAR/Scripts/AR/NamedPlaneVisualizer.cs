@@ -5,13 +5,6 @@ using UnityEngine.XR.ARSubsystems;
 
 namespace HoldfastAR.AR
 {
-    /// <summary>
-    /// Custom replacement for Unity's default ARPlaneMeshVisualizer.
-    /// Builds its own textured mesh from the plane boundary and tiles the
-    /// "JOSHUA CHUKWUEBUKA MOSES" tracker texture across it in real-world metres.
-    /// The mesh only renders while its plane is actually being tracked, so the
-    /// tracker appears only when a plane has been detected.
-    /// </summary>
     [RequireComponent(typeof(ARPlane), typeof(MeshFilter), typeof(MeshRenderer))]
     public class NamedPlaneVisualizer : MonoBehaviour
     {
@@ -19,7 +12,6 @@ namespace HoldfastAR.AR
         [SerializeField] private float tileSize = 0.6f;
         [SerializeField] private float heightOffset = 0.002f;
 
-        /// <summary>Global switch used to hide every tracker after the arena is placed.</summary>
         public static bool VisibilityEnabled { get; set; } = true;
 
         private ARPlane _plane;
@@ -68,8 +60,6 @@ namespace HoldfastAR.AR
                 return;
             }
 
-            // Unity treats clockwise triangles (seen from above) as front-facing.
-            // ARCore boundaries are convex, so a triangle fan from the centroid is enough.
             bool counterClockwise = SignedArea(boundary) > 0f;
 
             var vertices = new Vector3[n + 1];
@@ -115,7 +105,6 @@ namespace HoldfastAR.AR
             }
         }
 
-        // Plane-space metres -> texture space; the name is centred on the plane origin.
         private Vector2 ToUv(Vector2 planePoint) => planePoint / tileSize + new Vector2(0.5f, 0.5f);
 
         private static float SignedArea(NativeArray<Vector2> points)

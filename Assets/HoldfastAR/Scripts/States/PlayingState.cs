@@ -4,10 +4,6 @@ using UnityEngine;
 
 namespace HoldfastAR.States
 {
-    /// <summary>
-    /// The match itself: counts down the timer, runs the spawner and listens for
-    /// kills and the player's death. Ends in victory when time runs out.
-    /// </summary>
     public class PlayingState : GameState
     {
         private GameSession _session;
@@ -19,7 +15,6 @@ namespace HoldfastAR.States
 
         public override void Enter()
         {
-            // Show the HUD first so it is subscribed before the session broadcasts its starting values.
             Game.UI.ShowHud();
 
             DifficultySettings difficulty = Game.SelectedDifficulty;
@@ -60,7 +55,6 @@ namespace HoldfastAR.States
             Game.PlayerWeapon.ResetWeapon();
             Game.PlayerHealth.Invincible = true;
 
-            // Wipe the battlefield: every enemy and every in-flight bullet goes away.
             Game.Spawner.StopAndClear();
             Game.PlayerProjectiles.ReleaseAll();
             Game.EnemyProjectiles.ReleaseAll();

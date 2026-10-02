@@ -4,18 +4,12 @@ using UnityEngine.XR.ARFoundation;
 
 namespace HoldfastAR.AR
 {
-    /// <summary>
-    /// Remembers the shape of every detected horizontal plane (in arena-local space)
-    /// at the moment the arena is placed, and hands out random spawn points that lie
-    /// on those real-world surfaces. Storing the polygons relative to the anchored
-    /// arena keeps spawn points correct even if the anchor is refined later.
-    /// </summary>
     public class PlaneSpawnArea
     {
         private struct Polygon
         {
-            public Vector2[] Points; // arena-local x/z
-            public float Height;     // arena-local y
+            public Vector2[] Points;
+            public float Height;
         }
 
         private readonly List<Polygon> _polygons = new List<Polygon>();
@@ -46,11 +40,6 @@ namespace HoldfastAR.AR
             }
         }
 
-        /// <summary>
-        /// Random world position on a detected plane, inside a ring around the arena
-        /// centre and at least <paramref name="minFromPlayer"/> metres from the player.
-        /// Falls back to the arena's own plane height if no polygon is hit.
-        /// </summary>
         public Vector3 GetSpawnPoint(float minRadius, float maxRadius, Vector3 playerPosition, float minFromPlayer)
         {
             Vector3 fallback = Vector3.zero;

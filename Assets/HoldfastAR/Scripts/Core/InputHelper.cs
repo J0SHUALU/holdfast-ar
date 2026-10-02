@@ -6,13 +6,8 @@ using UnityEngine.InputSystem;
 
 namespace HoldfastAR.Core
 {
-    /// <summary>
-    /// Small wrapper so gameplay code works with either the new Input System or the
-    /// legacy Input Manager, whichever the project's "Active Input Handling" uses.
-    /// </summary>
     public static class InputHelper
     {
-        /// <summary>True on the frame a touch/click begins that is NOT on top of UI.</summary>
         public static bool TryGetWorldTap(out Vector2 screenPosition)
         {
             screenPosition = default;

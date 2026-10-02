@@ -8,12 +8,6 @@ using UnityEngine.XR.ARSubsystems;
 
 namespace HoldfastAR.AR
 {
-    /// <summary>
-    /// Handles horizontal plane detection and tap-to-place.
-    /// Only ONE arena can ever be placed: once placed, later taps are ignored,
-    /// plane detection is switched off and the name trackers are hidden.
-    /// The arena is parented to an ARAnchor so it stays locked to the real floor.
-    /// </summary>
     public class ARPlacementController : MonoBehaviour
     {
         [SerializeField] private ARRaycastManager raycastManager;
@@ -55,7 +49,6 @@ namespace HoldfastAR.AR
             if (planeManager != null) planeManager.requestedDetectionMode = PlaneDetectionMode.Horizontal;
         }
 
-        /// <summary>Start listening for a placement tap (no-op if already placed).</summary>
         public void BeginPlacement()
         {
             if (IsPlaced) return;
@@ -70,8 +63,6 @@ namespace HoldfastAR.AR
 
         public void CancelPlacement() => _listening = false;
 
-        // LateUpdate so the EventSystem has already processed this frame's touch,
-        // which makes the "is this tap on a UI button?" check reliable.
         private void LateUpdate()
         {
             if (!_listening || IsPlaced || raycastManager == null) return;
@@ -79,7 +70,6 @@ namespace HoldfastAR.AR
 
             if (raycastManager.Raycast(screenPoint, Hits, TrackableType.PlaneWithinPolygon))
             {
-                // Hits are sorted by distance; take the nearest upward-facing plane.
                 foreach (ARRaycastHit hit in Hits)
                 {
                     ARPlane plane = planeManager != null ? planeManager.GetPlane(hit.trackableId) : null;
@@ -94,7 +84,6 @@ namespace HoldfastAR.AR
         {
             _listening = false;
 
-            // Face the arena toward the player (yaw only).
             Vector3 toCamera = _camera != null ? _camera.transform.position - hitPose.position : Vector3.forward;
             toCamera.y = 0f;
             Quaternion rotation = toCamera.sqrMagnitude > 0.0001f ? Quaternion.LookRotation(toCamera) : hitPose.rotation;
@@ -104,7 +93,6 @@ namespace HoldfastAR.AR
             if (plane != null && anchorManager != null) anchor = anchorManager.AttachAnchor(plane, pose);
             if (anchor == null)
             {
-                // Fallback: a free-standing anchor at the hit pose.
                 var anchorGo = new GameObject("Arena Anchor");
                 anchorGo.transform.SetPositionAndRotation(pose.position, pose.rotation);
                 anchor = anchorGo.AddComponent<ARAnchor>();

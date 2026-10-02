@@ -3,11 +3,6 @@ using HoldfastAR.Core;
 
 namespace HoldfastAR.Data
 {
-    /// <summary>
-    /// Runtime stats for the current match: score, kills and the countdown timer.
-    /// Fields are private and only change through methods, and every change is
-    /// broadcast through GameEvents so the HUD updates itself.
-    /// </summary>
     public class GameSession
     {
         public DifficultySettings Difficulty { get; }

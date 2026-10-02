@@ -4,10 +4,6 @@ using UnityEngine;
 
 namespace HoldfastAR.Data
 {
-    /// <summary>
-    /// Local leaderboard. Saves every finished session as JSON in PlayerPrefs, so it
-    /// persists between app launches, and keeps only the latest 5 sessions (newest first).
-    /// </summary>
     public class Leaderboard
     {
         public const int MaxEntries = 5;
@@ -27,7 +23,6 @@ namespace HoldfastAR.Data
             Save();
         }
 
-        /// <summary>Index of the highest score among the stored sessions, or -1.</summary>
         public int BestIndex()
         {
             int best = -1;

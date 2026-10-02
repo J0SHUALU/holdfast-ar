@@ -2,10 +2,6 @@ using UnityEngine;
 
 namespace HoldfastAR.Data
 {
-    /// <summary>
-    /// Gameplay variables for one difficulty level. Each level (Easy/Normal/Hard)
-    /// is a separate asset, so balancing needs no code changes.
-    /// </summary>
     [CreateAssetMenu(menuName = "Holdfast AR/Difficulty Settings", fileName = "Difficulty")]
     public class DifficultySettings : ScriptableObject
     {
@@ -25,7 +21,6 @@ namespace HoldfastAR.Data
         [Min(0.1f)] public float enemyDamageMultiplier = 1f;
         [Min(0.1f)] public float scoreMultiplier = 1f;
 
-        /// <summary>Builds an in-memory preset; used when no assets are assigned.</summary>
         public static DifficultySettings Create(string name, float duration, float health, float interval,
             int maxAlive, float shooterChance, float speed, float damage, float score)
         {

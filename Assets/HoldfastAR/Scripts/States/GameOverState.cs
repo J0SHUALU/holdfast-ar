@@ -3,7 +3,6 @@ using HoldfastAR.Data;
 
 namespace HoldfastAR.States
 {
-    /// <summary>End-of-match summary. Saves the session to the leaderboard exactly once.</summary>
     public class GameOverState : GameState
     {
         private readonly bool _survived;

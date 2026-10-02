@@ -4,10 +4,6 @@ using UnityEngine;
 
 namespace HoldfastAR.Combat
 {
-    /// <summary>
-    /// Scene component that owns one ObjectPool of projectiles.
-    /// The scene has two of these: one for player bullets and one for Shooter enemy bullets.
-    /// </summary>
     public class ProjectilePool : MonoBehaviour
     {
         [SerializeField] private Projectile prefab;
@@ -26,7 +22,6 @@ namespace HoldfastAR.Combat
             }
 
             _pool = new ObjectPool<Projectile>(prefab, initialSize, transform);
-            // Every instance learns which pool to return to once, up front.
             foreach (Projectile p in GetComponentsInChildren<Projectile>(true)) p.SetOwnerPool(this);
         }
 

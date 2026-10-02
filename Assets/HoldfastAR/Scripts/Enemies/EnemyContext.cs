@@ -5,7 +5,6 @@ using UnityEngine;
 
 namespace HoldfastAR.Enemies
 {
-    /// <summary>Everything an enemy needs from the outside world, injected by the EnemyFactory.</summary>
     public readonly struct EnemyContext
     {
         public readonly Transform Target;

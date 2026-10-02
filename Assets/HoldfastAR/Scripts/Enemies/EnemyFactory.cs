@@ -5,11 +5,6 @@ using UnityEngine;
 
 namespace HoldfastAR.Enemies
 {
-    /// <summary>
-    /// Factory pattern: the only place that knows which prefab belongs to which
-    /// EnemyType and how to wire an enemy's dependencies. The spawner just asks
-    /// for "a Shooter here" and gets back a ready-to-fight Enemy.
-    /// </summary>
     public class EnemyFactory : MonoBehaviour
     {
         [SerializeField] private MeleeEnemy meleePrefab;

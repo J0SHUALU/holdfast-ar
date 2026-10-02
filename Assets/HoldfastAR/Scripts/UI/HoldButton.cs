@@ -4,7 +4,6 @@ using UnityEngine.EventSystems;
 
 namespace HoldfastAR.UI
 {
-    /// <summary>Reports press/release so the weapon can auto-fire while the button is held.</summary>
     public class HoldButton : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, IPointerExitHandler
     {
         public event Action<bool> HeldChanged;
