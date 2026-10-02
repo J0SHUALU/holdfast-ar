@@ -27,4 +27,5 @@ A mobile AR survival shooter made in Unity 6 with AR Foundation, by **Joshua Chu
 
 ## Assets
 
-3D models from Quaternius on poly.pizza and UI sprites and font from Kenney on kenney.nl, all free (CC0). The sounds and plane tracker texture are my own.
+3D models from Quaternius on poly.pizza and UI sprites and font from Kenney on kenney.nl, all free (CC0). 
+
