@@ -145,8 +145,15 @@ namespace HoldfastAR.Enemies
 
         protected virtual void Die()
         {
-            _dying = true;
             GameEvents.RaiseEnemyKilled(scoreValue, transform.position);
+            BeginDeath();
+        }
+
+        protected void SelfDestruct() => BeginDeath();
+
+        private void BeginDeath()
+        {
+            _dying = true;
             AudioManager.Instance?.PlayAt(SoundId.EnemyDeath, transform.position);
             StopAllCoroutines();
             SetTint(null);

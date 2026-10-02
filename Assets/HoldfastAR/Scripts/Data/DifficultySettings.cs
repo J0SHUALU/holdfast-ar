@@ -14,7 +14,8 @@ namespace HoldfastAR.Data
         [Header("Spawning")]
         [Min(0.2f)] public float spawnInterval = 2.5f;
         [Min(1)] public int maxAliveEnemies = 6;
-        [Range(0f, 1f)] public float shooterChance = 0.4f;
+        [Range(0f, 1f)] public float shooterChance = 0.35f;
+        [Range(0f, 1f)] public float diverChance = 0.2f;
 
         [Header("Enemy scaling")]
         [Min(0.1f)] public float enemySpeedMultiplier = 1f;
@@ -22,7 +23,7 @@ namespace HoldfastAR.Data
         [Min(0.1f)] public float scoreMultiplier = 1f;
 
         public static DifficultySettings Create(string name, float duration, float health, float interval,
-            int maxAlive, float shooterChance, float speed, float damage, float score)
+            int maxAlive, float shooterChance, float diverChance, float speed, float damage, float score)
         {
             var d = CreateInstance<DifficultySettings>();
             d.name = name;
@@ -32,6 +33,7 @@ namespace HoldfastAR.Data
             d.spawnInterval = interval;
             d.maxAliveEnemies = maxAlive;
             d.shooterChance = shooterChance;
+            d.diverChance = diverChance;
             d.enemySpeedMultiplier = speed;
             d.enemyDamageMultiplier = damage;
             d.scoreMultiplier = score;
@@ -40,9 +42,9 @@ namespace HoldfastAR.Data
 
         public static DifficultySettings[] CreateDefaults() => new[]
         {
-            Create("Easy", 60f, 150f, 3.2f, 4, 0.25f, 0.8f, 0.6f, 0.8f),
-            Create("Normal", 90f, 100f, 2.4f, 6, 0.4f, 1f, 1f, 1f),
-            Create("Hard", 120f, 80f, 1.6f, 9, 0.5f, 1.3f, 1.4f, 1.5f),
+            Create("Easy", 60f, 150f, 3.2f, 4, 0.25f, 0.15f, 0.8f, 0.6f, 0.8f),
+            Create("Normal", 90f, 100f, 2.4f, 6, 0.35f, 0.2f, 1f, 1f, 1f),
+            Create("Hard", 120f, 80f, 1.6f, 9, 0.4f, 0.25f, 1.3f, 1.4f, 1.5f),
         };
     }
 }

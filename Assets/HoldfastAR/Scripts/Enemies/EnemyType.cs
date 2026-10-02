@@ -3,6 +3,7 @@ namespace HoldfastAR.Enemies
     public enum EnemyType
     {
         Melee,
-        Shooter
+        Shooter,
+        Diver
     }
 }

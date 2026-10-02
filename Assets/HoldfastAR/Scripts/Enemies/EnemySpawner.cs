@@ -49,7 +49,10 @@ namespace HoldfastAR.Enemies
 
         private void SpawnOne()
         {
-            EnemyType type = Random.value < _difficulty.shooterChance ? EnemyType.Shooter : EnemyType.Melee;
+            float roll = Random.value;
+            EnemyType type = roll < _difficulty.shooterChance ? EnemyType.Shooter
+                : roll < _difficulty.shooterChance + _difficulty.diverChance ? EnemyType.Diver
+                : EnemyType.Melee;
             Vector3 position = _area.GetSpawnPoint(minSpawnRadius, maxSpawnRadius, _player.position, minDistanceFromPlayer);
 
             Enemy enemy = factory.Create(type, position, _arena, _player, _playerHealth, _difficulty);

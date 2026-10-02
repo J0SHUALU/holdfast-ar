@@ -17,7 +17,8 @@ MonoBehaviour:
   playerMaxHealth: 100
   spawnInterval: 2.4
   maxAliveEnemies: 6
-  shooterChance: 0.4
+  shooterChance: 0.35
+  diverChance: 0.2
   enemySpeedMultiplier: 1
   enemyDamageMultiplier: 1
   scoreMultiplier: 1
