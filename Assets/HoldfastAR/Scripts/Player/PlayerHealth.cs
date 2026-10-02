@@ -1,5 +1,6 @@
 using HoldfastAR.Audio;
 using HoldfastAR.Core;
+using HoldfastAR.Data;
 using UnityEngine;
 
 namespace HoldfastAR.Player
@@ -43,7 +44,7 @@ namespace HoldfastAR.Player
             GameEvents.RaisePlayerDamaged(amount);
 
 #if UNITY_ANDROID || UNITY_IOS
-            Handheld.Vibrate();
+            if (GameSettings.Vibration) Handheld.Vibrate();
 #endif
             if (Current > 0f)
             {

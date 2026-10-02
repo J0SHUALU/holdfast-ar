@@ -56,9 +56,13 @@ namespace HoldfastAR.UI
             start.GetComponentInChildren<Text>().color = UITheme.Text;
             ((RectTransform)start.transform).Place(bottom, new Vector2(900, 190), new Vector2(0, 230));
 
-            Button board = UIFactory.Button(Root, "LEADERBOARD", UITheme.ButtonNeutral, Manager.ShowLeaderboard, UITheme.BodySize);
+            Button board = UIFactory.Button(Root, "LEADERBOARD", UITheme.ButtonNeutral, Manager.ShowLeaderboard, UITheme.SmallSize);
             board.GetComponentInChildren<Text>().color = UITheme.Text;
-            ((RectTransform)board.transform).Place(bottom, new Vector2(900, 130), new Vector2(0, 70));
+            ((RectTransform)board.transform).Place(bottom, new Vector2(444, 130), new Vector2(-228, 70));
+
+            Button settings = UIFactory.Button(Root, "SETTINGS", UITheme.ButtonNeutral, Manager.ShowSettings, UITheme.SmallSize);
+            settings.GetComponentInChildren<Text>().color = UITheme.Text;
+            ((RectTransform)settings.transform).Place(bottom, new Vector2(444, 130), new Vector2(228, 70));
         }
 
         protected override void OnShow() => Refresh();

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using HoldfastAR.Data;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -39,6 +40,7 @@ namespace HoldfastAR.UI
 
         public void Track(Transform target)
         {
+            if (!GameSettings.SpawnMarkers) return;
             Marker free = null;
             foreach (Marker m in _markers)
                 if (m.Target == null || m.TimeLeft <= 0f) { free = m; break; }

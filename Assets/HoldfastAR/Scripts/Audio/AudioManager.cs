@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using HoldfastAR.Core;
+using HoldfastAR.Data;
 using UnityEngine;
 
 namespace HoldfastAR.Audio
@@ -40,6 +41,7 @@ namespace HoldfastAR.Audio
             _uiSource = CreateSource("UI + Player (2D)", 0f);
             _musicSource = CreateSource("Music (2D loop)", 0f);
             _musicSource.loop = true;
+            GameSettings.Changed += ApplySettings;
 
             _spatialSources = new AudioSource[spatialVoices];
             for (int i = 0; i < spatialVoices; i++)
@@ -78,7 +80,7 @@ namespace HoldfastAR.Audio
         {
             if (!_clips.TryGetValue(id, out AudioClip clip)) return;
             _uiSource.pitch = 1f + UnityEngine.Random.Range(-pitchVariation, pitchVariation);
-            _uiSource.PlayOneShot(clip, _volumes[id] * masterVolume);
+            _uiSource.PlayOneShot(clip, _volumes[id] * masterVolume * GameSettings.SoundVolume);
         }
 
         public void PlayAt(SoundId id, Vector3 position, float pitchVariation = 0.05f)
@@ -89,7 +91,7 @@ namespace HoldfastAR.Audio
 
             source.transform.position = position;
             source.pitch = 1f + UnityEngine.Random.Range(-pitchVariation, pitchVariation);
-            source.PlayOneShot(clip, _volumes[id] * masterVolume);
+            source.PlayOneShot(clip, _volumes[id] * masterVolume * GameSettings.SoundVolume);
         }
 
         public void PlayMusic(SoundId id)
@@ -97,10 +99,21 @@ namespace HoldfastAR.Audio
             if (!_clips.TryGetValue(id, out AudioClip clip)) return;
             if (_musicSource.clip == clip && _musicSource.isPlaying) return;
             _musicSource.clip = clip;
-            _musicSource.volume = musicVolume * masterVolume;
+            ApplySettings();
             _musicSource.Play();
         }
 
         public void StopMusic() => _musicSource.Stop();
+
+        private void ApplySettings()
+        {
+            if (_musicSource != null) _musicSource.volume = musicVolume * masterVolume * GameSettings.MusicVolume;
+        }
+
+        protected override void OnDestroy()
+        {
+            if (Instance == this) GameSettings.Changed -= ApplySettings;
+            base.OnDestroy();
+        }
     }
 }

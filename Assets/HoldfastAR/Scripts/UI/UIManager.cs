@@ -22,6 +22,7 @@ namespace HoldfastAR.UI
 
         public MainMenuPanel MainMenu { get; private set; }
         public LeaderboardPanel Leaderboard { get; private set; }
+        public SettingsPanel Settings { get; private set; }
         public PlacementPanel Placement { get; private set; }
         public HudPanel Hud { get; private set; }
         public GameOverPanel GameOver { get; private set; }
@@ -51,6 +52,7 @@ namespace HoldfastAR.UI
 
             MainMenu = Add(new MainMenuPanel(), _frame);
             Leaderboard = Add(new LeaderboardPanel(), _frame);
+            Settings = Add(new SettingsPanel(), _frame);
             Placement = Add(new PlacementPanel(), _frame);
             Hud = Add(new HudPanel(), _frame);
             GameOver = Add(new GameOverPanel(), _frame);
@@ -79,6 +81,7 @@ namespace HoldfastAR.UI
 
         public void ShowMainMenu() => ShowOnly(MainMenu);
         public void ShowLeaderboard() => ShowOnly(Leaderboard);
+        public void ShowSettings() => ShowOnly(Settings);
         public void ShowPlacement() => ShowOnly(Placement);
         public void ShowHud() => ShowOnly(Hud);
 
