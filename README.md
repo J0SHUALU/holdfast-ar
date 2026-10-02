@@ -1,6 +1,7 @@
 # Holdfast AR
 
-A mobile AR survival shooter made in Unity 6 with AR Foundation, by **Joshua Chukwuebuka Moses**. Scan the floor, place the game on it, and survive until the timer runs out by shooting the enemies that spawn on the detected planes.
+A mobile AR survival shooter made in Unity 6 with AR Foundation, by **Joshua Chukwuebuka Moses**. You play the last colonist on a planet called Kepler-9. You scan your real floor, drop your landing dome on it, and hold off three kinds of alien attackers with a ray gun until the evac ship arrives. If the timer runs out, you win. If your health hits zero, the dome falls.
+
 
 ## Features
 
