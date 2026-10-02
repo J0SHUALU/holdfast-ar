@@ -19,6 +19,7 @@ Developer: **Joshua Chukwuebuka Moses**
 | **Lose** | Your health reaches 0. |
 | **Brute (Melee)** | Green alien grunt. Rushes you and hits only at close range (0.5 m) on a 1.1 s cooldown. 3 bullets to kill, 15 damage, 100 pts. |
 | **Sentinel (Shooter)** | Yellow bug mech. Stops 1.4 m away and fires projectiles from up to 2.2 m. 5 bullets to kill, 8 damage per shot, 150 pts. |
+| **Glider (Diver)** | Purple flying blob. Cruises above the floor, then dives at your phone and bursts on impact for 20 damage. 1 bullet to kill, 75 pts. |
 | **Difficulty** | Easy / Normal / Hard change match length, player HP, spawn rate, max enemies, enemy speed & damage and score multiplier. |
 
 Flow: **Main Menu → Scan & Place → Play → End Summary → Restart / Main Menu**
@@ -30,10 +31,10 @@ Flow: **Main Menu → Scan & Place → Play → End Summary → Restart / Main M
 - **Tap to place, single instance**: later taps are ignored. Plane detection stops and the trackers hide once the arena is placed.
 - **Player**: health, pooled shooting, score, red-flash + vibration damage feedback, game-over trigger.
 - **Object pooling**: `ObjectPool<T>` pre-instantiates every bullet. No `Instantiate`/`Destroy` per shot; bullets are reset on reuse.
-- **Two enemy types**: `Enemy` (abstract) → `MeleeEnemy`, `ShooterEnemy`. Different models, ranges, damage and bullets-to-kill.
+- **Three enemy types**: `Enemy` (abstract) → `MeleeEnemy`, `ShooterEnemy`, `DiverEnemy`. Different models, ranges, damage and bullets-to-kill.
 - **Enemies**: spawn on detected planes (a marker shows where), have health, play hit reactions, add score on death, and are wiped when the match ends.
 - **Game states**: State pattern with `MainMenuState`, `PlacementState`, `PlayingState`, `GameOverState`.
-- **UI**: portrait layout. Start menu (title, start, leaderboard, difficulty), HUD (health, score, time, spawn markers), end summary (score, kills, time survived, restart, main menu).
+- **UI**: portrait layout. Start menu (title, start, leaderboard, settings, difficulty), settings (sound, music, vibration, spawn markers), HUD (health, score, time, spawn markers), end summary (score, kills, time survived, restart, main menu).
 - **Leaderboard**: latest 5 sessions saved as JSON in `PlayerPrefs`, so they persist between launches.
 - **Sound**: player shoot, player death, enemy spawn, enemy shoot, melee attack, plus hit, death, UI, placement, victory and ambient music.
 
@@ -46,13 +47,14 @@ Assets/HoldfastAR/
     States/     GameState, GameStateMachine, MainMenu/Placement/Playing/GameOver states
     AR/         ARPlacementController, NamedPlaneVisualizer, PlaneSpawnArea
     Player/     PlayerHealth, PlayerWeapon
-    Enemies/    Enemy (abstract), MeleeEnemy, ShooterEnemy, EnemyFactory, EnemySpawner
+    Enemies/    Enemy (abstract), MeleeEnemy, ShooterEnemy, DiverEnemy, EnemyFactory, EnemySpawner
     Pooling/    IPoolable, ObjectPool<T>
     Combat/     Projectile, ProjectilePool
     Audio/      AudioManager, SoundId
-    Data/       DifficultySettings, GameSession, Leaderboard, SessionRecord
-    UI/         UIManager, UIPanel (abstract) + MainMenu/Leaderboard/Placement/Hud/GameOver panels, SpawnMarkers
+    Data/       DifficultySettings, GameSettings, GameSession, Leaderboard, SessionRecord
+    UI/         UIManager, UIPanel (abstract) + MainMenu/Leaderboard/Placement/Hud/GameOver panels, SettingsPanel, SpawnMarkers
     GameManager.cs
+  Editor/               IOSBuildSettings (Xcode linker settings for ARKit)
   Resources/Audio/      12 original .wav sound effects
   Resources/Textures/   PlaneTrackerName.png (custom plane tracker texture)
   Resources/UI, Fonts/  UI sprites, app icon and font
@@ -75,7 +77,7 @@ Docs/       Technical documentation (PDF + HTML source) and the submission docum
 
 1. Install the iOS Build Support module for Unity 6 (6000.4) and Xcode on a Mac.
 2. In **Project Settings → XR Plug-in Management → iOS**, make sure **Apple ARKit** is ticked.
-3. **File → Build Profiles → iOS → Switch Platform**, then **Build** into a folder (for example `Builds/iOS`).
+3. **File → Build Profiles → iOS → Switch Platform**, then **Build** into a folder (for example `Builds/iOS`). Switch first: ARKit only adds its camera background shader when iOS is the active platform. `Assets/HoldfastAR/Editor/IOSBuildSettings.cs` adds the Swift library paths Xcode 26 needs to link ARKit.
 4. Open `Unity-iPhone.xcodeproj` in Xcode, select the **Unity-iPhone** target, and under **Signing & Capabilities** tick *Automatically manage signing* and choose your Apple ID team.
 5. Plug in an ARKit-capable iPhone (iOS 15+), select it as the run destination and press **Run**. The first time, trust the developer profile on the phone under *Settings → General → VPN & Device Management*.
 
@@ -85,7 +87,7 @@ Bundle identifier: `com.joshuamoses.holdfastar` on both platforms.
 
 | Asset | Used for | Source | Licence |
 |---|---|---|---|
-| Ultimate Space Kit by Quaternius | Brute (Enemy Large), Sentinel (Mech), dome, rocks, plants, solar panel | poly.pizza | CC0 |
+| Ultimate Space Kit by Quaternius | Brute (Enemy Large), Sentinel (Mech), Glider (Enemy Flying), dome, rocks, plants, solar panel | poly.pizza | CC0 |
 | Sci-Fi Gun Pack by Quaternius | Player ray gun | poly.pizza | CC0 |
 | UI Pack (Space Expansion) by Kenney | Panels, buttons, bars, crosshair, spawn markers | kenney.nl | CC0 |
 | Kenney Future font | UI text and plane tracker label | kenney.nl | CC0 |

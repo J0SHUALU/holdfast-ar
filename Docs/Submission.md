@@ -15,7 +15,8 @@
 - Horizontal AR plane detection with a custom plane tracker texture showing **JOSHUA CHUKWUEBUKA MOSES**.
 - Tap-to-place a single anchored arena; plane detection stops after placement.
 - First-person shooter: health, score, pooled shooting, damage feedback, game-over trigger.
-- Two animated enemy types: **Brute** alien grunt (melee, 3 hits) and **Sentinel** bug mech (shooter, 5 hits), spawning on detected planes with on-screen spawn markers.
+- Three animated enemy types: **Brute** alien grunt (melee, 3 hits), **Sentinel** bug mech (shooter, 5 hits) and **Glider** flying diver (bursts on impact, 1 hit), spawning on detected planes with on-screen spawn markers.
+- Settings panel: sound, music, vibration and spawn markers, saved between launches.
 - Portrait space-themed UI using CC0 assets from poly.pizza (Quaternius) and kenney.nl.
 - Object pooling for every projectile (no Instantiate/Destroy during gameplay).
 - Game states: Main Menu → Placement → Playing → Game Over (State pattern).
