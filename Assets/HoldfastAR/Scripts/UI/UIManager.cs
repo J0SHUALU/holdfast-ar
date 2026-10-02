@@ -9,14 +9,15 @@ using UnityEngine.InputSystem.UI;
 
 namespace HoldfastAR.UI
 {
-    /// <summary>
-    /// Builds the canvas and all screens, and switches which one is visible.
-    /// Every screen derives from UIPanel, so UIManager handles them polymorphically.
-    /// </summary>
     public class UIManager : MonoBehaviour
     {
         private readonly List<UIPanel> _panels = new List<UIPanel>();
+        private const float FrameWidth = 1080f;
+        private const float FrameHeight = 1920f;
+
+        private RectTransform _backdrop;
         private RectTransform _safeArea;
+        private RectTransform _frame;
         private Rect _lastSafeArea;
 
         public MainMenuPanel MainMenu { get; private set; }
@@ -40,22 +41,24 @@ namespace HoldfastAR.UI
             var scaler = canvasGo.AddComponent<CanvasScaler>();
             scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
             scaler.referenceResolution = new Vector2(1080, 1920);
-            scaler.matchWidthOrHeight = 0.5f;
+            scaler.matchWidthOrHeight = 0f;
             canvasGo.AddComponent<GraphicRaycaster>();
 
+            _backdrop = UIFactory.Rect("Backdrops", canvasGo.transform).Stretch();
             _safeArea = UIFactory.Rect("Safe Area", canvasGo.transform).Stretch();
+            _frame = UIFactory.Rect("Portrait Frame", _safeArea).Place(new Vector2(0.5f, 0.5f), new Vector2(FrameWidth, FrameHeight));
             ApplySafeArea();
 
-            MainMenu = Add(new MainMenuPanel());
-            Leaderboard = Add(new LeaderboardPanel());
-            Placement = Add(new PlacementPanel());
-            Hud = Add(new HudPanel());
-            GameOver = Add(new GameOverPanel());
+            MainMenu = Add(new MainMenuPanel(), _frame);
+            Leaderboard = Add(new LeaderboardPanel(), _frame);
+            Placement = Add(new PlacementPanel(), _frame);
+            Hud = Add(new HudPanel(), _frame);
+            GameOver = Add(new GameOverPanel(), _frame);
         }
 
-        private T Add<T>(T panel) where T : UIPanel
+        private T Add<T>(T panel, RectTransform parent) where T : UIPanel
         {
-            panel.Build(_safeArea, this, _game);
+            panel.Build(parent, _backdrop, this, _game);
             _panels.Add(panel);
             return panel;
         }
@@ -81,8 +84,7 @@ namespace HoldfastAR.UI
 
         public void ShowGameOver(SessionRecord record)
         {
-            bool isBest = _game.Leaderboard.Sessions.Count > 0 && _game.Leaderboard.BestIndex() == 0;
-            GameOver.SetResult(record, isBest);
+            GameOver.SetResult(record);
             ShowOnly(GameOver);
         }
 
@@ -90,11 +92,19 @@ namespace HoldfastAR.UI
         {
             if (_safeArea == null) return;
             Rect safe = Screen.safeArea;
-            if (safe == _lastSafeArea || Screen.width <= 0 || Screen.height <= 0) return;
-            _lastSafeArea = safe;
-            _safeArea.anchorMin = new Vector2(safe.xMin / Screen.width, safe.yMin / Screen.height);
-            _safeArea.anchorMax = new Vector2(safe.xMax / Screen.width, safe.yMax / Screen.height);
-            _safeArea.offsetMin = _safeArea.offsetMax = Vector2.zero;
+            if (safe != _lastSafeArea && Screen.width > 0 && Screen.height > 0)
+            {
+                _lastSafeArea = safe;
+                _safeArea.anchorMin = new Vector2(safe.xMin / Screen.width, safe.yMin / Screen.height);
+                _safeArea.anchorMax = new Vector2(safe.xMax / Screen.width, safe.yMax / Screen.height);
+                _safeArea.offsetMin = _safeArea.offsetMax = Vector2.zero;
+            }
+
+            Rect area = _safeArea.rect;
+            if (area.width <= 0f || area.height <= 0f) return;
+            float scale = Mathf.Min(area.width / FrameWidth, area.height / FrameHeight);
+            _frame.localScale = new Vector3(scale, scale, 1f);
+            _frame.sizeDelta = new Vector2(FrameWidth, Mathf.Max(FrameHeight, area.height / scale));
         }
 
         private static void EnsureEventSystem()

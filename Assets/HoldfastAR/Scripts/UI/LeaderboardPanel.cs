@@ -5,32 +5,45 @@ using UnityEngine.UI;
 
 namespace HoldfastAR.UI
 {
-    /// <summary>Shows the latest 5 saved sessions, newest first, with the best one starred.</summary>
     public class LeaderboardPanel : UIPanel
     {
-        private readonly List<Text> _rows = new List<Text>();
+        private readonly List<Text> _scores = new List<Text>();
+        private readonly List<Text> _details = new List<Text>();
+        private readonly List<Image> _rows = new List<Image>();
         private Text _empty;
 
         protected override void OnBuild()
         {
-            UIFactory.Image(Root, "Dim", UITheme.Dim).rectTransform.Stretch();
-            RectTransform card = UIFactory.Image(Root, "Card", UITheme.Card, rounded: true).rectTransform
-                .Place(new Vector2(0.5f, 0.5f), new Vector2(960, 1350));
-            UIFactory.VerticalLayout(card, 18, 50);
+            UIFactory.Shade(Backdrop, "Shade", UITheme.ShadeTop, UITheme.ShadeMiddle, UITheme.ShadeBottom);
+            UIFactory.Image(Backdrop, "Dim", new Color(0f, 0f, 0f, 0.35f)).rectTransform.Stretch();
 
-            UIFactory.Text(card, "Title", "LEADERBOARD", UITheme.HeadingSize + 10, UITheme.Accent, style: FontStyle.Bold).Height(110);
-            UIFactory.Text(card, "Subtitle", $"Your latest {Leaderboard.MaxEntries} sessions", UITheme.SmallSize, UITheme.TextMuted).Height(55);
+            Vector2 top = new Vector2(0.5f, 1f);
+            UIFactory.Text(Root, "Title", "LEADERBOARD", 100, UITheme.Text).SingleLine(60).Glow(UITheme.AccentDark, 4f)
+                .rectTransform.Place(top, new Vector2(1000, 140), new Vector2(0, -140));
+            UIFactory.Text(Root, "Subtitle", $"LAST {Leaderboard.MaxEntries} MISSIONS", 30, UITheme.Amber)
+                .rectTransform.Place(top, new Vector2(1000, 50), new Vector2(0, -290));
 
+            RectTransform list = UIFactory.Rect("List", Root).Place(new Vector2(0.5f, 0.5f), new Vector2(900, 900), new Vector2(0, 40));
+            UIFactory.VerticalLayout(list, 18);
             for (int i = 0; i < Leaderboard.MaxEntries; i++)
             {
-                Image rowBg = UIFactory.Image(card, $"Row {i + 1}", UITheme.ButtonNeutral, rounded: true).Height(140);
-                Text rowText = UIFactory.Text(rowBg.transform, "Text", "", UITheme.SmallSize, UITheme.Text, TextAnchor.MiddleLeft);
-                rowText.rectTransform.Stretch(20);
-                _rows.Add(rowText);
+                Image row = UIFactory.Image(list, $"Row {i + 1}", UITheme.Tile, UISkin.Panel).Height(160);
+                UIFactory.Text(row.transform, "Rank", $"{i + 1}", 64, UITheme.Accent, TextAnchor.MiddleLeft).rectTransform.Stretch(36);
+                Text score = UIFactory.Text(row.transform, "Score", "", 56, UITheme.Text, TextAnchor.UpperRight);
+                score.rectTransform.Stretch(30);
+                Text details = UIFactory.Text(row.transform, "Details", "", 26, UITheme.TextMuted, TextAnchor.LowerRight);
+                details.rectTransform.Stretch(30);
+                _rows.Add(row);
+                _scores.Add(score);
+                _details.Add(details);
             }
 
-            _empty = UIFactory.Text(card, "Empty", "No sessions yet. Go survive!", UITheme.BodySize, UITheme.TextMuted).Height(80);
-            UIFactory.Button(card, "BACK", UITheme.AccentDark, Manager.ShowMainMenu).Height(130);
+            _empty = UIFactory.Text(Root, "Empty", "NO MISSIONS YET", 40, UITheme.TextMuted);
+            _empty.rectTransform.Place(new Vector2(0.5f, 0.5f), new Vector2(900, 80), new Vector2(0, 40));
+
+            Button back = UIFactory.Button(Root, "BACK", UITheme.ButtonNeutral, Manager.ShowMainMenu, UITheme.BodySize);
+            back.GetComponentInChildren<Text>().color = UITheme.Text;
+            ((RectTransform)back.transform).Place(new Vector2(0.5f, 0f), new Vector2(900, 130), new Vector2(0, 70));
         }
 
         protected override void OnShow()
@@ -41,18 +54,14 @@ namespace HoldfastAR.UI
 
             for (int i = 0; i < _rows.Count; i++)
             {
-                Transform row = _rows[i].transform.parent;
                 bool has = i < sessions.Count;
-                row.gameObject.SetActive(has);
+                _rows[i].gameObject.SetActive(has);
                 if (!has) continue;
 
                 SessionRecord s = sessions[i];
-                string bestTag = i == best ? "   BEST" : "";
-                string result = s.survived ? "SURVIVED" : "FELL";
-                _rows[i].text = $"<b>#{i + 1}   {s.score} pts</b>{bestTag}\n" +
-                                $"<size=28>{s.date}  •  {s.difficulty}  •  {s.enemiesDefeated} kills  •  " +
-                                $"{FormatTime(s.timeSurvived)}  •  {result}</size>";
-                _rows[i].color = i == best ? UITheme.Gold : UITheme.Text;
+                _scores[i].text = s.score.ToString();
+                _scores[i].color = i == best ? UITheme.Amber : UITheme.Text;
+                _details[i].text = $"{(s.survived ? "HELD" : "OVERRUN")}  {FormatTime(s.timeSurvived)}  {s.enemiesDefeated} KILLS  {s.difficulty.ToUpperInvariant()}";
             }
         }
 

@@ -4,28 +4,42 @@ using UnityEngine.UI;
 
 namespace HoldfastAR.UI
 {
-    /// <summary>Start menu: title, difficulty selection, Start and Leaderboard buttons.</summary>
     public class MainMenuPanel : UIPanel
     {
+        private static readonly Color ChipIdle = new Color(0.14f, 0.11f, 0.22f, 0.9f);
+
         private Button[] _difficultyButtons;
-        private Text _difficultyInfo;
 
         protected override void OnBuild()
         {
-            UIFactory.Image(Root, "Dim", UITheme.Dim).rectTransform.Stretch();
+            UIFactory.Shade(Backdrop, "Shade", UITheme.ShadeTop, UITheme.ShadeMiddle, UITheme.ShadeBottom);
 
-            RectTransform card = UIFactory.Image(Root, "Card", UITheme.Card, rounded: true).rectTransform
-                .Place(new Vector2(0.5f, 0.5f), new Vector2(900, 1300));
-            UIFactory.VerticalLayout(card, 28, 60);
+            Vector2 top = new Vector2(0.5f, 1f);
+            RectTransform frame = UIFactory.Image(Root, "EmblemFrame", UITheme.Danger, UISkin.Panel).rectTransform
+                .Place(top, new Vector2(284, 284), new Vector2(0, -98));
+            Image emblem = UIFactory.Image(frame, "Emblem", Color.white);
+            emblem.sprite = Resources.Load<Sprite>("UI/AppIcon");
+            emblem.preserveAspect = true;
+            emblem.rectTransform.Stretch(12);
 
-            UIFactory.Text(card, "Title", "HOLDFAST AR", UITheme.TitleSize, UITheme.Accent, style: FontStyle.Bold)
-                .SingleLine(UITheme.HeadingSize).Height(140);
-            UIFactory.Text(card, "Subtitle", "Hold your ground. Survive the swarm.", UITheme.BodySize, UITheme.TextMuted).Height(70);
-            UIFactory.Text(card, "DifficultyLabel", "DIFFICULTY", UITheme.SmallSize, UITheme.TextMuted, style: FontStyle.Bold).Height(60);
+            UIFactory.Text(Root, "Title", "HOLDFAST <color=#FFBD38>AR</color>", 140, UITheme.Text)
+                .SingleLine(80).Glow(UITheme.AccentDark, 4f)
+                .rectTransform.Place(top, new Vector2(1000, 170), new Vector2(0, -400));
 
-            RectTransform row = UIFactory.Rect("DifficultyRow", card).Height(120);
+            UIFactory.Image(Root, "Rule", UITheme.Accent).rectTransform.Place(top, new Vector2(240, 6), new Vector2(0, -585));
+
+            UIFactory.Text(Root, "Tagline", "DEFEND THE DOME UNTIL EVAC ARRIVES", 30, UITheme.TextMuted)
+                .SingleLine(20).rectTransform.Place(top, new Vector2(1000, 60), new Vector2(0, -615));
+
+            Vector2 bottom = new Vector2(0.5f, 0f);
+            UIFactory.Text(Root, "ThreatLabel", "THREAT LEVEL", 28, UITheme.Amber, TextAnchor.MiddleLeft)
+                .rectTransform.Place(bottom, new Vector2(900, 50), new Vector2(0, 610));
+
+            RectTransform row = UIFactory.Image(Root, "DifficultyRow", UITheme.Tile, UISkin.Panel)
+                .rectTransform.Place(bottom, new Vector2(900, 140), new Vector2(0, 460));
             var h = row.gameObject.AddComponent<HorizontalLayoutGroup>();
-            h.spacing = 20;
+            h.padding = new RectOffset(14, 14, 14, 14);
+            h.spacing = 12;
             h.childControlWidth = h.childControlHeight = true;
             h.childForceExpandWidth = h.childForceExpandHeight = true;
 
@@ -34,17 +48,17 @@ namespace HoldfastAR.UI
             for (int i = 0; i < levels.Length; i++)
             {
                 int index = i;
-                _difficultyButtons[i] = UIFactory.Button(row, levels[i].displayName.ToUpperInvariant(), UITheme.ButtonNeutral,
-                    () => SelectDifficulty(index), UITheme.SmallSize + 4);
+                _difficultyButtons[i] = UIFactory.Button(row, levels[i].displayName.ToUpperInvariant(), ChipIdle,
+                    () => SelectDifficulty(index), UITheme.SmallSize);
             }
 
-            _difficultyInfo = UIFactory.Text(card, "DifficultyInfo", "", UITheme.SmallSize, UITheme.Text).Height(90);
+            Button start = UIFactory.Button(Root, "START MISSION", UITheme.Accent, Game.StartGame, UITheme.HeadingSize);
+            start.GetComponentInChildren<Text>().color = UITheme.Text;
+            ((RectTransform)start.transform).Place(bottom, new Vector2(900, 190), new Vector2(0, 230));
 
-            UIFactory.Button(card, "START", UITheme.AccentDark, Game.StartGame, UITheme.HeadingSize).Height(170);
-            UIFactory.Button(card, "LEADERBOARD", UITheme.ButtonNeutral, Manager.ShowLeaderboard).Height(130);
-
-            UIFactory.Text(card, "Credit", "by Joshua Chukwuebuka Moses", UITheme.SmallSize, UITheme.TextMuted,
-                style: FontStyle.Italic).Height(80);
+            Button board = UIFactory.Button(Root, "LEADERBOARD", UITheme.ButtonNeutral, Manager.ShowLeaderboard, UITheme.BodySize);
+            board.GetComponentInChildren<Text>().color = UITheme.Text;
+            ((RectTransform)board.transform).Place(bottom, new Vector2(900, 130), new Vector2(0, 70));
         }
 
         protected override void OnShow() => Refresh();
@@ -60,13 +74,9 @@ namespace HoldfastAR.UI
             for (int i = 0; i < _difficultyButtons.Length; i++)
             {
                 bool selected = i == Game.DifficultyIndex;
-                _difficultyButtons[i].image.color = selected ? UITheme.AccentDark : UITheme.ButtonNeutral;
-                _difficultyButtons[i].GetComponentInChildren<Text>().color = selected ? UITheme.Accent : UITheme.Text;
+                _difficultyButtons[i].image.color = selected ? UITheme.Amber : ChipIdle;
+                _difficultyButtons[i].GetComponentInChildren<Text>().color = selected ? UITheme.Ink : UITheme.TextMuted;
             }
-
-            DifficultySettings d = Game.SelectedDifficulty;
-            _difficultyInfo.text = $"Survive {d.matchDuration:0}s  •  {d.playerMaxHealth:0} HP  •  up to {d.maxAliveEnemies} enemies\n" +
-                                   $"Enemy speed x{d.enemySpeedMultiplier:0.0}  •  Score x{d.scoreMultiplier:0.0}";
         }
     }
 }

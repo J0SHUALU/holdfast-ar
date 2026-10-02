@@ -2,30 +2,28 @@ using UnityEngine;
 
 namespace HoldfastAR.UI
 {
-    /// <summary>
-    /// Abstract base for every screen. UIManager treats all panels the same way
-    /// (Build/Show/Hide/Tick) while each subclass builds and updates its own widgets.
-    /// </summary>
     public abstract class UIPanel
     {
         protected RectTransform Root { get; private set; }
+        protected RectTransform Backdrop { get; private set; }
         protected GameManager Game { get; private set; }
         protected UIManager Manager { get; private set; }
 
         public bool IsVisible => Root != null && Root.gameObject.activeSelf;
 
-        public void Build(RectTransform parent, UIManager manager, GameManager game)
+        public void Build(RectTransform parent, RectTransform backdropParent, UIManager manager, GameManager game)
         {
             Manager = manager;
             Game = game;
+            Backdrop = UIFactory.Rect(GetType().Name + " Backdrop", backdropParent).Stretch();
             Root = UIFactory.Rect(GetType().Name, parent).Stretch();
             OnBuild();
-            Root.gameObject.SetActive(false);
+            SetActive(false);
         }
 
         public void Show()
         {
-            Root.gameObject.SetActive(true);
+            SetActive(true);
             OnShow();
         }
 
@@ -33,7 +31,13 @@ namespace HoldfastAR.UI
         {
             if (!IsVisible) return;
             OnHide();
-            Root.gameObject.SetActive(false);
+            SetActive(false);
+        }
+
+        private void SetActive(bool active)
+        {
+            Backdrop.gameObject.SetActive(active);
+            Root.gameObject.SetActive(active);
         }
 
         public virtual void Tick(float deltaTime) { }

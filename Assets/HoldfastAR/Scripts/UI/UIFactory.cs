@@ -5,39 +5,51 @@ using UnityEngine.UI;
 
 namespace HoldfastAR.UI
 {
-    /// <summary>
-    /// Helper that builds uGUI widgets from code, so panels stay short and every
-    /// button/text shares one look. Uses Unity's built-in font, no extra assets needed.
-    /// </summary>
+    public enum UISkin
+    {
+        None,
+        Panel,
+        Button,
+        Bar,
+        Crosshair,
+        Arrow,
+        Marker
+    }
+
     public static class UIFactory
     {
+        private const float SliceScale = 0.55f;
+
         private static Font _font;
-        private static Sprite _rounded;
+        private static Sprite _panel;
+        private static Sprite _button;
+        private static Sprite _bar;
+        private static Sprite _crosshair;
+        private static Sprite _arrow;
+        private static Sprite _marker;
 
-        public static Font Font => _font != null ? _font : (_font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf"));
-
-        /// <summary>A 9-sliced rounded rectangle built at runtime.</summary>
-        public static Sprite Rounded
+        public static Font Font
         {
             get
             {
-                if (_rounded != null) return _rounded;
-                const int size = 64, radius = 22;
-                var tex = new Texture2D(size, size, TextureFormat.RGBA32, false) { name = "Rounded UI" };
-                var pixels = new Color32[size * size];
-                for (int y = 0; y < size; y++)
-                for (int x = 0; x < size; x++)
-                {
-                    float dx = Mathf.Max(0, Mathf.Max(radius - x, x - (size - 1 - radius)));
-                    float dy = Mathf.Max(0, Mathf.Max(radius - y, y - (size - 1 - radius)));
-                    float a = Mathf.Clamp01(radius - Mathf.Sqrt(dx * dx + dy * dy) + 0.5f);
-                    pixels[y * size + x] = new Color32(255, 255, 255, (byte)(a * 255));
-                }
-                tex.SetPixels32(pixels);
-                tex.Apply();
-                _rounded = Sprite.Create(tex, new Rect(0, 0, size, size), new Vector2(0.5f, 0.5f), 100f, 0,
-                    SpriteMeshType.FullRect, new Vector4(radius, radius, radius, radius));
-                return _rounded;
+                if (_font != null) return _font;
+                _font = Resources.Load<Font>("Fonts/KenneyFuture");
+                if (_font == null) _font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+                return _font;
+            }
+        }
+
+        public static Sprite SkinSprite(UISkin skin)
+        {
+            switch (skin)
+            {
+                case UISkin.Panel: return _panel != null ? _panel : (_panel = Resources.Load<Sprite>("UI/Panel"));
+                case UISkin.Button: return _button != null ? _button : (_button = Resources.Load<Sprite>("UI/Button"));
+                case UISkin.Bar: return _bar != null ? _bar : (_bar = Resources.Load<Sprite>("UI/Bar"));
+                case UISkin.Crosshair: return _crosshair != null ? _crosshair : (_crosshair = Resources.Load<Sprite>("UI/Crosshair"));
+                case UISkin.Arrow: return _arrow != null ? _arrow : (_arrow = Resources.Load<Sprite>("UI/Arrow"));
+                case UISkin.Marker: return _marker != null ? _marker : (_marker = Resources.Load<Sprite>("UI/Marker"));
+                default: return null;
             }
         }
 
@@ -57,7 +69,6 @@ namespace HoldfastAR.UI
             return rt;
         }
 
-        /// <summary>Anchors at a normalised point with a fixed pixel size.</summary>
         public static RectTransform Place(this RectTransform rt, Vector2 anchor, Vector2 size, Vector2 offset = default)
         {
             rt.anchorMin = rt.anchorMax = anchor;
@@ -67,15 +78,19 @@ namespace HoldfastAR.UI
             return rt;
         }
 
-        public static Image Image(Transform parent, string name, Color color, bool rounded = false)
+        public static Image Image(Transform parent, string name, Color color, UISkin skin = UISkin.None)
         {
             RectTransform rt = Rect(name, parent);
             var img = rt.gameObject.AddComponent<Image>();
             img.color = color;
-            if (rounded)
+            Sprite sprite = SkinSprite(skin);
+            if (sprite != null)
             {
-                img.sprite = Rounded;
-                img.type = UnityEngine.UI.Image.Type.Sliced;
+                img.sprite = sprite;
+                bool sliced = sprite.border.sqrMagnitude > 0f;
+                img.type = sliced ? UnityEngine.UI.Image.Type.Sliced : UnityEngine.UI.Image.Type.Simple;
+                img.pixelsPerUnitMultiplier = SliceScale;
+                if (!sliced) img.preserveAspect = true;
             }
             img.raycastTarget = false;
             return img;
@@ -91,7 +106,7 @@ namespace HoldfastAR.UI
             text.fontSize = size;
             text.color = color;
             text.alignment = alignment;
-            text.fontStyle = style;
+            text.fontStyle = style == FontStyle.Bold ? FontStyle.Normal : style;
             text.horizontalOverflow = HorizontalWrapMode.Wrap;
             text.verticalOverflow = VerticalWrapMode.Overflow;
             text.raycastTarget = false;
@@ -100,7 +115,7 @@ namespace HoldfastAR.UI
 
         public static Button Button(Transform parent, string label, Color color, UnityAction onClick, int fontSize = UITheme.BodySize)
         {
-            Image bg = Image(parent, label + " Button", color, rounded: true);
+            Image bg = Image(parent, label + " Button", color, UISkin.Button);
             bg.raycastTarget = true;
             var button = bg.gameObject.AddComponent<Button>();
             ColorBlock colors = button.colors;
@@ -113,6 +128,8 @@ namespace HoldfastAR.UI
 
             Text text = Text(bg.transform, "Label", label, fontSize, UITheme.Text, style: FontStyle.Bold);
             text.rectTransform.Stretch();
+            text.rectTransform.offsetMin = new Vector2(12, 8);
+            text.rectTransform.offsetMax = new Vector2(-12, 0);
             return button;
         }
 
@@ -129,10 +146,38 @@ namespace HoldfastAR.UI
             return layout;
         }
 
-        /// <summary>
-        /// Keeps a heading on one line: the font shrinks (down to <paramref name="minSize"/>)
-        /// until the text fits the width instead of wrapping onto a second line.
-        /// </summary>
+        private static Sprite _shade;
+
+        public static Image Shade(Transform parent, string name, Color top, Color middle, Color bottom)
+        {
+            Image img = Image(parent, name, Color.white);
+            img.sprite = ShadeSprite(top, middle, bottom);
+            img.rectTransform.Stretch();
+            return img;
+        }
+
+        private static Sprite ShadeSprite(Color top, Color middle, Color bottom)
+        {
+            if (_shade != null) return _shade;
+            var tex = new Texture2D(1, 64, TextureFormat.RGBA32, false) { name = "Shade", wrapMode = TextureWrapMode.Clamp };
+            for (int y = 0; y < 64; y++)
+            {
+                float t = y / 63f;
+                tex.SetPixel(0, y, t < 0.5f ? Color.Lerp(bottom, middle, t * 2f) : Color.Lerp(middle, top, (t - 0.5f) * 2f));
+            }
+            tex.Apply();
+            _shade = Sprite.Create(tex, new Rect(0, 0, 1, 64), new Vector2(0.5f, 0.5f));
+            return _shade;
+        }
+
+        public static Text Glow(this Text text, Color color, float size = 3f)
+        {
+            var outline = text.gameObject.AddComponent<Outline>();
+            outline.effectColor = color;
+            outline.effectDistance = new Vector2(size, -size);
+            return text;
+        }
+
         public static Text SingleLine(this Text text, int minSize)
         {
             text.resizeTextForBestFit = true;
@@ -142,7 +187,6 @@ namespace HoldfastAR.UI
             return text;
         }
 
-        /// <summary>Sets the preferred height of an element inside a layout group.</summary>
         public static T Height<T>(this T component, float height) where T : Component
         {
             LayoutElement le = component.GetComponent<LayoutElement>();

@@ -3,7 +3,6 @@ using UnityEngine.UI;
 
 namespace HoldfastAR.UI
 {
-    /// <summary>Guides the player through scanning the floor and tapping to place the arena.</summary>
     public class PlacementPanel : UIPanel
     {
         private Text _instruction;
@@ -12,7 +11,7 @@ namespace HoldfastAR.UI
 
         protected override void OnBuild()
         {
-            RectTransform banner = UIFactory.Image(Root, "Banner", UITheme.Panel, rounded: true).rectTransform
+            RectTransform banner = UIFactory.Image(Root, "Banner", UITheme.Panel, UISkin.Panel).rectTransform
                 .Place(new Vector2(0.5f, 1f), new Vector2(960, 300), new Vector2(0, -80));
             _instruction = UIFactory.Text(banner, "Instruction", "", UITheme.BodySize + 4, UITheme.Text, style: FontStyle.Bold);
             _instruction.rectTransform.Stretch(30);
@@ -31,12 +30,12 @@ namespace HoldfastAR.UI
         {
             if (count == 0)
             {
-                _instruction.text = "Point your phone at the floor and move it slowly to scan";
-                _status.text = "Searching for horizontal surfaces...";
+                _instruction.text = "Scan the ground slowly to find a landing zone";
+                _status.text = "Searching for flat ground...";
             }
             else
             {
-                _instruction.text = "Tap your name on the floor to place your Holdfast";
+                _instruction.text = "Tap your name tile to drop the Holdfast dome";
                 _status.text = count == 1 ? "1 surface detected" : $"{count} surfaces detected";
             }
         }

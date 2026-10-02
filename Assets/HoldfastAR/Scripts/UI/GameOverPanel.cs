@@ -4,7 +4,6 @@ using UnityEngine.UI;
 
 namespace HoldfastAR.UI
 {
-    /// <summary>End-game summary: result, final score, enemies defeated, time survived, Restart / Main Menu.</summary>
     public class GameOverPanel : UIPanel
     {
         private Text _title;
@@ -12,51 +11,51 @@ namespace HoldfastAR.UI
         private Text _score;
         private Text _kills;
         private Text _time;
-        private Text _difficulty;
-        private Text _best;
 
         protected override void OnBuild()
         {
-            UIFactory.Image(Root, "Dim", UITheme.Dim).rectTransform.Stretch();
-            RectTransform card = UIFactory.Image(Root, "Card", UITheme.Card, rounded: true).rectTransform
-                .Place(new Vector2(0.5f, 0.5f), new Vector2(900, 1320));
-            UIFactory.VerticalLayout(card, 22, 60);
+            UIFactory.Shade(Backdrop, "Shade", UITheme.ShadeTop, UITheme.ShadeMiddle, UITheme.ShadeBottom);
+            UIFactory.Image(Backdrop, "Dim", new Color(0f, 0f, 0f, 0.35f)).rectTransform.Stretch();
 
-            _title = UIFactory.Text(card, "Title", "", UITheme.TitleSize - 10, UITheme.Accent, style: FontStyle.Bold)
-                .SingleLine(UITheme.HeadingSize).Height(130);
-            _subtitle = UIFactory.Text(card, "Subtitle", "", UITheme.BodySize, UITheme.TextMuted).Height(70);
+            Vector2 top = new Vector2(0.5f, 1f);
+            _title = UIFactory.Text(Root, "Title", "", 130, UITheme.Accent).SingleLine(70).Glow(UITheme.AccentDark, 4f);
+            _title.rectTransform.Place(top, new Vector2(1000, 170), new Vector2(0, -170));
+            _subtitle = UIFactory.Text(Root, "Subtitle", "", 30, UITheme.TextMuted).SingleLine(20);
+            _subtitle.rectTransform.Place(top, new Vector2(1000, 60), new Vector2(0, -350));
 
-            _score = StatRow(card, "FINAL SCORE");
-            _kills = StatRow(card, "ENEMIES DEFEATED");
-            _time = StatRow(card, "TIME SURVIVED");
-            _difficulty = StatRow(card, "DIFFICULTY");
+            RectTransform stats = UIFactory.Rect("Stats", Root).Place(new Vector2(0.5f, 0.5f), new Vector2(900, 560), new Vector2(0, 80));
+            UIFactory.VerticalLayout(stats, 22);
+            _score = StatRow(stats, "FINAL SCORE", UITheme.Amber);
+            _kills = StatRow(stats, "ENEMIES DEFEATED", UITheme.Text);
+            _time = StatRow(stats, "TIME SURVIVED", UITheme.Text);
 
-            _best = UIFactory.Text(card, "Best", "", UITheme.BodySize, UITheme.Gold, style: FontStyle.Bold).Height(70);
+            Vector2 bottom = new Vector2(0.5f, 0f);
+            Button restart = UIFactory.Button(Root, "RESTART", UITheme.Accent, Game.Restart, UITheme.HeadingSize);
+            restart.GetComponentInChildren<Text>().color = UITheme.Text;
+            ((RectTransform)restart.transform).Place(bottom, new Vector2(900, 190), new Vector2(0, 230));
 
-            UIFactory.Button(card, "RESTART", UITheme.AccentDark, Game.Restart, UITheme.HeadingSize - 6).Height(150);
-            UIFactory.Button(card, "MAIN MENU", UITheme.ButtonNeutral, Game.ReturnToMainMenu).Height(130);
+            Button menu = UIFactory.Button(Root, "MAIN MENU", UITheme.ButtonNeutral, Game.ReturnToMainMenu, UITheme.BodySize);
+            menu.GetComponentInChildren<Text>().color = UITheme.Text;
+            ((RectTransform)menu.transform).Place(bottom, new Vector2(900, 130), new Vector2(0, 70));
         }
 
-        private static Text StatRow(RectTransform parent, string label)
+        private static Text StatRow(RectTransform parent, string label, Color valueColor)
         {
-            Image bg = UIFactory.Image(parent, label, UITheme.ButtonNeutral, rounded: true).Height(115);
-            UIFactory.Text(bg.transform, "Label", label, UITheme.SmallSize, UITheme.TextMuted, TextAnchor.MiddleLeft, FontStyle.Bold)
-                .rectTransform.Stretch(30);
-            Text value = UIFactory.Text(bg.transform, "Value", "", UITheme.HeadingSize - 10, UITheme.Text, TextAnchor.MiddleRight, FontStyle.Bold);
-            value.rectTransform.Stretch(30);
+            Image bg = UIFactory.Image(parent, label, UITheme.Tile, UISkin.Panel).Height(170);
+            UIFactory.Text(bg.transform, "Label", label, 30, UITheme.TextMuted, TextAnchor.MiddleLeft).rectTransform.Stretch(40);
+            Text value = UIFactory.Text(bg.transform, "Value", "", 72, valueColor, TextAnchor.MiddleRight);
+            value.rectTransform.Stretch(40);
             return value;
         }
 
-        public void SetResult(SessionRecord record, bool isBest)
+        public void SetResult(SessionRecord record)
         {
-            _title.text = record.survived ? "YOU HELD FAST" : "OVERRUN";
+            _title.text = record.survived ? "DOME HELD" : "OVERRUN";
             _title.color = record.survived ? UITheme.Success : UITheme.Danger;
-            _subtitle.text = record.survived ? "You survived until the timer ran out (+survival bonus)" : "The swarm broke through your defences";
+            _subtitle.text = record.survived ? "EVAC HAS LANDED. THE COLONY IS SAFE" : "THE RAIDERS BROKE THROUGH THE DOME";
             _score.text = record.score.ToString();
             _kills.text = record.enemiesDefeated.ToString();
             _time.text = LeaderboardPanel.FormatTime(record.timeSurvived);
-            _difficulty.text = record.difficulty;
-            _best.text = isBest ? "NEW BEST OF YOUR LAST 5!" : "";
         }
     }
 }
