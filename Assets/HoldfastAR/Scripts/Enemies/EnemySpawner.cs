@@ -7,10 +7,6 @@ using UnityEngine;
 
 namespace HoldfastAR.Enemies
 {
-    /// <summary>
-    /// Spawns enemies on detected AR planes at the rate set by the difficulty,
-    /// tracks the living ones, and wipes them all when a match ends.
-    /// </summary>
     public class EnemySpawner : MonoBehaviour
     {
         [SerializeField] private EnemyFactory factory;
@@ -62,11 +58,11 @@ namespace HoldfastAR.Enemies
             _alive.Add(enemy);
             enemy.Removed += OnEnemyRemoved;
             AudioManager.Instance?.PlayAt(SoundId.EnemySpawn, position);
+            GameEvents.RaiseEnemySpawned(enemy.transform);
         }
 
         private void OnEnemyRemoved(Enemy enemy) => _alive.Remove(enemy);
 
-        /// <summary>Stops spawning and removes every enemy still in play.</summary>
         public void StopAndClear()
         {
             _running = false;
