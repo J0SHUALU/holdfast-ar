@@ -1,0 +1,63 @@
+@startuml architecture
+!include style.iuml
+top to bottom direction
+skinparam nodesep 30
+skinparam ranksep 45
+package "Core" {
+  [GameManager\n<<Singleton>>] as GM
+  [GameStateMachine\n<<State>>] as SM
+  [GameEvents\n<<Observer>>] as EV
+}
+package "Game states" {
+  [MainMenu] as S1
+  [Placement] as S2
+  [Playing] as S3
+  [GameOver] as S4
+}
+package "AR" {
+  [ARPlacementController] as PC
+  [NamedPlaneVisualizer] as NPV
+  [PlaneSpawnArea] as PSA
+}
+package "Enemies" {
+  [EnemySpawner] as ES
+  [EnemyFactory\n<<Factory>>] as EF
+  [Brute / Sentinel / Glider] as EN
+}
+package "Player" {
+  [PlayerWeapon] as PW
+  [PlayerHealth] as PH
+}
+package "Pooling" {
+  [ProjectilePool x2\n<<Object Pool>>] as PP
+}
+package "UI" {
+  [UIManager] as UM
+  [6 screens + SpawnMarkers] as UP
+}
+package "Data and audio" {
+  [Leaderboard] as LB
+  [GameSettings] as GSET
+  [AudioManager\n<<Singleton>>] as AM
+}
+GM --> SM
+GM --> UM
+SM --> S1
+SM --> S2
+SM --> S3
+SM --> S4
+S2 --> PC
+PC --> PSA
+PC --> NPV
+S3 --> ES
+ES --> EF
+EF --> EN
+PW --> PP
+EN --> PP
+UM --> UP
+S4 --> LB
+EN ..> EV
+PH ..> EV
+EV ..> UP : HUD updates
+GSET ..> AM
+@enduml

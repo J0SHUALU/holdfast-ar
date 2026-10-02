@@ -1,0 +1,45 @@
+skinparam dpi 200
+skinparam shadowing false
+skinparam defaultFontName "DejaVu Sans"
+skinparam defaultFontSize 11
+skinparam backgroundColor #FFFFFF
+skinparam ArrowColor #7A2A2E
+skinparam ArrowThickness 1.1
+skinparam roundCorner 8
+skinparam packageStyle rectangle
+skinparam package {
+  BackgroundColor #FBF4F4
+  BorderColor #C9443C
+  FontColor #7A1A20
+  FontStyle bold
+}
+skinparam component {
+  BackgroundColor #FFFFFF
+  BorderColor #8A1420
+  FontColor #1D1418
+}
+skinparam class {
+  BackgroundColor #FFFFFF
+  BorderColor #8A1420
+  HeaderBackgroundColor #FBEBEA
+  FontColor #1D1418
+  AttributeFontColor #3A2A2E
+}
+skinparam state {
+  BackgroundColor #FFFFFF
+  BorderColor #8A1420
+  FontColor #1D1418
+  StartColor #8A1420
+  EndColor #8A1420
+}
+skinparam sequence {
+  ParticipantBackgroundColor #FBEBEA
+  ParticipantBorderColor #8A1420
+  LifeLineBorderColor #C9A4A6
+  ArrowColor #7A2A2E
+}
+skinparam note {
+  BackgroundColor #FFF6E0
+  BorderColor #E0A030
+}
+hide empty members

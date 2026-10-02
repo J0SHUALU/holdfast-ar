@@ -1,0 +1,19 @@
+@startuml
+!include style.iuml
+skinparam nodesep 16
+skinparam ranksep 36
+title Object pool
+interface IPoolable {
+  +OnTakenFromPool()
+  +OnReturnedToPool()
+}
+class "ObjectPool<T>" as OP {
+  +Get()
+  +Release(item)
+  +ReleaseAll()
+}
+class ProjectilePool
+ProjectilePool *-- OP
+IPoolable <|.. Projectile
+OP o-- Projectile
+@enduml

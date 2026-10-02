@@ -1,0 +1,24 @@
+@startuml pool
+!include style.iuml
+participant PlayerWeapon as W
+participant ProjectilePool as P
+participant "ObjectPool<Projectile>" as O
+participant Projectile as B
+== Awake (before play) ==
+P -> O : new ObjectPool(prefab, 40)
+O -> B : Instantiate x40, SetActive(false)
+== Firing ==
+W -> P : Fire(origin, dir, speed, damage, team)
+P -> O : Get()
+alt a bullet is free
+  O -> B : pop from stack, SetActive(true)
+else pool empty
+  O -> B : recycle oldest active bullet
+end
+O -> B : OnTakenFromPool()
+== Hit or 3 s lifetime ==
+B -> P : Release(this)
+P -> O : Release(bullet)
+O -> B : OnReturnedToPool() (clear trail, reset)
+O -> O : SetActive(false), push to stack
+@enduml

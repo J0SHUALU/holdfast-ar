@@ -1,0 +1,16 @@
+@startuml
+!include style.iuml
+skinparam nodesep 16
+skinparam ranksep 36
+title Game states
+abstract class GameState {
+  +Enter()
+  +Tick(dt)
+  +Exit()
+}
+GameStateMachine o-- GameState
+GameState <|-- MainMenuState
+GameState <|-- PlacementState
+GameState <|-- PlayingState
+GameState <|-- GameOverState
+@enduml
